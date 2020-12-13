@@ -1,5 +1,9 @@
 # Go-Zero Plugin
 
+[![go-zero](https://img.shields.io/badge/Github-go--zero-brightgreen?logo=github)](https://github.com/tal-tech/go-zero)
+[![license](https://img.shields.io/badge/License-MIT-blue)](https://github.com/zeromicro/goctl-intellij/blob/main/LICENSE)
+
+# 介绍
 一款支持go-zero api语言结构语法高亮、检测以及api、rpc、model快捷生成的插件工具。
 
 
