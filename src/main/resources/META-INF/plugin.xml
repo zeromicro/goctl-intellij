@@ -1,0 +1,100 @@
+<idea-plugin url="https://www.xiaoheiban.cn">
+    <id>cn.xiaoheiban.go-zero</id>
+    <name>Goctl</name>
+    <vendor email="anqiansong@xiaoheiban.cn" url="http://www.100tal.com/">TAL</vendor>
+    <description><![CDATA[
+     <a href="http://www.100tal.com/">TAL</a> support for JetBrains products.
+     <br>
+     <br>
+     Support for Api programming language of tal.
+     <br>
+     <br>
+     <a href="https://github.com/tal-tech/go-zero">go-zero</a> is a web and rpc framework for golang that with
+     lots of engineering practices builtin. It’s born to ensure the stability of the busy services with resilience design,
+      and has been serving sites with tens of millions users for years
+     <br>
+     <br>
+     <h1>Features</h1>
+     <ul>
+        <li>Api File Import</li>
+        <li>Find reference</li>
+        <li>Add context menu</li>
+        <li>Highlighting of api</li>
+        <li>Grammar and lexer check</li>
+        <li>Duplicate define check</li>
+        <li>Keyword completion contributor</li>
+        <li>Support Code format</li>
+     </ul>
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
+
+    <application-components>
+    </application-components>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <internalFileTemplate name="Api File"/>
+        <internalFileTemplate name="Api Template"/>
+        <fileTypeFactory implementation="cn.xiaoheiban.language.ApiFileTypeFactory"/>
+        <lang.syntaxHighlighterFactory language="api"
+                                       implementationClass="cn.xiaoheiban.highlighting.ApiSyntaxHighlighterFactory"/>
+        <lang.parserDefinition language="api" implementationClass="cn.xiaoheiban.parser.ApiParserDefinition"/>
+        <lang.ast.factory language="api" implementationClass="cn.xiaoheiban.psi.ApiASTFactory"/>
+        <annotator language="api" implementationClass="cn.xiaoheiban.language.ApiAnnotator"/>
+        <colorSettingsPage implementation="cn.xiaoheiban.highlighting.ApiColorSettingsPage"/>
+        <lang.braceMatcher language="api" implementationClass="cn.xiaoheiban.editor.ApiPairedBraceMatcher"/>
+
+        <lang.formatter language="api" implementationClass="cn.xiaoheiban.formatter.ApiFormatter"/>
+        <lang.quoteHandler language="api" implementationClass="cn.xiaoheiban.editor.QuoteHandler"/>
+        <lang.commenter language="api" implementationClass="cn.xiaoheiban.language.ApiCommenter"/>
+        <completion.contributor language="api"
+                                implementationClass="cn.xiaoheiban.completion.KeywordCompletionContributor"/>
+        <completion.contributor language="api" implementationClass="cn.xiaoheiban.completion.ApiCompletionContributor"/>
+        <defaultLiveTemplatesProvider implementation="cn.xiaoheiban.template.ApiLiveTemplatesProvider"/>
+        <liveTemplateContext implementation="cn.xiaoheiban.template.ApiEverywhereContextType"/>
+        <liveTemplateContext implementation="cn.xiaoheiban.template.ApiLiveTemplateContextType$Struct"/>
+        <liveTemplateContext implementation="cn.xiaoheiban.template.ApiLiveTemplateContextType$ApiFile"/>
+        <liveTemplateContext implementation="cn.xiaoheiban.template.ApiLiveTemplateContextType$ApiService"/>
+        <liveTemplateContext implementation="cn.xiaoheiban.template.ApiLiveTemplateContextType$Tag"/>
+        <liveTemplateContext implementation="cn.xiaoheiban.template.ApiLiveTemplateContextType$TagLiteral"/>
+        <liveTemplateMacro implementation="cn.xiaoheiban.template.ApiFieldNameMacro"/>
+    </extensions>
+
+    <actions>
+        <action id="Api.NewApiFile" class="cn.xiaoheiban.action.ApiCreateFileAction"
+                text="Api File" description="Create new Api file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
+        <action id="Api.NewProtoFile" class="cn.xiaoheiban.action.ProtoCreateFileAction"
+                text="Proto File" description="Create new Proto file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
+        <group id="GoZeroEditorGroup" text="Go Zero" popup="true">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <action class="cn.xiaoheiban.action.ApiAction" id="EditorApiAction" text="Api Code"
+                    description="Generate api"/>
+            <action class="cn.xiaoheiban.action.RpcAction" id="EditorRpcAction" text="Rpc Code"
+                    description="Generate rpc code"/>
+            <action class="cn.xiaoheiban.action.ModelAction" id="EditorModelAction" text="Model Code"
+                    description="Generate model code"/>
+        </group>
+
+        <group id="GoZeroProjectNewGroup" text="Go Zero" popup="true">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
+            <action class="cn.xiaoheiban.action.ApiNewAction" id="ProjectApiNewAction" text="Api Greet Service"
+                    description="Generate Api greet service"/>
+            <action class="cn.xiaoheiban.action.RpcNewAction" id="ProjectRpcNewAction" text="Rpc Greet Service"
+                    description="Generate rpc greet service"/>
+            <action class="cn.xiaoheiban.action.ApiAction" id="ProjectTemplateAction" text="Api Code"
+                    description="Generate api"/>
+            <action class="cn.xiaoheiban.action.RpcAction" id="ProjectRpcAction" text="Rpc Code"
+                    description="Generate rpc code"/>
+            <action class="cn.xiaoheiban.action.ModelAction" id="ProjectModelAction" text="Model Code"
+                    description="Generate model code"/>
+        </group>
+    </actions>
+</idea-plugin>

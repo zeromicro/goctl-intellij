@@ -1,0 +1,55 @@
+plugins {
+    id 'antlr'
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.6.5'
+}
+
+group 'cn.xiaoheiban'
+version '0.7.11'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://dl.bintray.com/antlr/maven/"
+    }
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+dependencies {
+    antlr("org.antlr:antlr4:$antlr4Version") { // use ANTLR version 4
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
+    compile('org.antlr:antlr4-jetbrains-adapter:3.0.snapshot.efd2349681fbe1719e7115f0a4e8b82ecafe21b9') {
+        exclude group: 'com.jetbrains'
+        exclude group: 'org.slf4j'
+    }
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version = '2020.2.1'
+    pluginName = 'Goctl'
+    downloadSources true
+    updateSinceUntilBuild false
+}
+
+patchPluginXml {
+    sinceBuild '193.0'
+    changeNotes """
+    <h1># 2020-11-24(v0.7.11-latest)</h1>
+    <ul>
+        <li>Remove fixed grammatical order</li>
+        <li>Modify the key of kv key value grammar to id type</li>
+    </ul>
+    """
+}
+
+publishPlugin {
+    token = System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken")
+    channels 'beta'
+}

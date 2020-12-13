@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<templateSet group="Api">
+    <template description='import declaration' name='import' toReformat='true' toShortenFQNames='true'
+              value='import ""$END$'>
+        <context>
+            <option name='API_FILE' value='true'/>
+        </context>
+    </template>
+
+    <template description='info block declaration' name='info' toReformat='true' toShortenFQNames='true'
+              value='info(&#10;  title: "type title here"&#10;    desc: "type desc here"&#10;  author: "type author here"&#10;  email: "type email here"&#10;    version: "type version here"&#10;)'>
+        <context>
+            <option name='API_FILE' value='true'/>
+        </context>
+    </template>
+
+    <template description='type group declaration' name='type' toReformat='true' toShortenFQNames='true'
+              value='type(&#10;    $END$&#10;)&#10;'>
+        <context>
+            <option name='API_FILE' value='true'/>
+        </context>
+    </template>
+
+    <template description='handler declaration' name='handler' toReformat='true' toShortenFQNames='true'
+              value='@handler handlerName$END$'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+
+    <template description='route get declaration' name='get' toReformat='true' toShortenFQNames='true'
+              value='get /path/:id () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route head declaration' name='head' toReformat='true' toShortenFQNames='true'
+              value='head /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route post declaration' name='post' toReformat='true' toShortenFQNames='true'
+              value='post /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route put declaration' name='put' toReformat='true' toShortenFQNames='true'
+              value='put /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route delete declaration' name='delete' toReformat='true' toShortenFQNames='true'
+              value='delete /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route connect declaration' name='connect' toReformat='true' toShortenFQNames='true'
+              value='connect /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route options declaration' name='options' toReformat='true' toShortenFQNames='true'
+              value='options /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+    <template description='route trace declaration' name='trace' toReformat='true' toShortenFQNames='true'
+              value='trace /path () returns ()'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+
+    <template description='doc declaration' name='@doc' toReformat='true' toShortenFQNames='true'
+              value='@doc(&#10;    summary: ""&#10;)&#10;'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+
+    <template description='doc declaration' name='doc' toReformat='true' toShortenFQNames='true'
+              value='@doc(&#10;    summary: "$END$"&#10;)&#10;'>
+        <context>
+            <option name='API_SERVICE' value='true'/>
+        </context>
+    </template>
+
+    <template description='service declaration' name='service' toReformat='true' toShortenFQNames='true'
+              value='@server(&#10;jwt: Auth&#10;  group: template&#10;)&#10;service template {&#10;   @handler handlerName&#10;    get /users/id/:userId (request) returns (response)&#10;}'>
+        <context>
+            <option name='API_FILE' value='true'/>
+        </context>
+    </template>
+
+    <template description='xml:""' name='xml' toReformat='true' toShortenFQNames='true' value='xml:"$FIELD_NAME$"'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG_LITERAL' value='true'/>
+        </context>
+    </template>
+    <template description='json:""' name='json' toReformat='true' toShortenFQNames='true' value='json:"$FIELD_NAME$"'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG_LITERAL' value='true'/>
+        </context>
+    </template>
+
+    <template description='path:""' name='path' toReformat='true' toShortenFQNames='true' value='path:"$FIELD_NAME$"'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG_LITERAL' value='true'/>
+        </context>
+    </template>
+
+    <template description='form:""' name='form' toReformat='true' toShortenFQNames='true' value='form:"$FIELD_NAME$"'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG_LITERAL' value='true'/>
+        </context>
+    </template>
+
+</templateSet>
