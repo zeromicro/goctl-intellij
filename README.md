@@ -3,6 +3,7 @@
 [![go-zero](https://img.shields.io/badge/Github-go--zero-brightgreen?logo=github)](https://github.com/tal-tech/go-zero)
 [![license](https://img.shields.io/badge/License-MIT-blue)](https://github.com/zeromicro/goctl-intellij/blob/main/LICENSE)
 [![license](https://img.shields.io/badge/Version-0.7.11-red)](https://github.com/zeromicro/goctl-intellij/releases)
+[![Java CI with Gradle](https://github.com/zeromicro/goctl-intellij/workflows/Java%20CI%20with%20Gradle/badge.svg)](https://github.com/zeromicro/goctl-intellij/actions)
 
 # 介绍
 一款支持go-zero api语言结构语法高亮、检测以及api、rpc、model快捷生成的插件工具。
