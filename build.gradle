@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'cn.xiaoheiban'
-version '0.7.11'
+version '0.7.12'
 
 repositories {
     mavenCentral()
@@ -41,15 +41,10 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
-    <h1># 2020-11-24(v0.7.11-latest)</h1>
+    <h1># 2020-12-14(v0.7.12-latest)</h1>
     <ul>
-        <li>Remove fixed grammatical order</li>
-        <li>Modify the key of kv key value grammar to id type</li>
+        <li>Support frammar "@doc" </li>
+        <li>Optimize indent format of the comments </li>
     </ul>
     """
-}
-
-publishPlugin {
-    token = System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken")
-    channels 'beta'
 }

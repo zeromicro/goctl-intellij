@@ -1,3 +1,4 @@
+// Generated from /Users/anqiansong/workspace/java/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiLexer.g4 by ANTLR 4.8
 package cn.xiaoheiban.antlr4;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

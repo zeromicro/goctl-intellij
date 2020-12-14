@@ -4,6 +4,7 @@ import cn.xiaoheiban.antlr4.ApiLexer;
 import cn.xiaoheiban.antlr4.ApiParser;
 import cn.xiaoheiban.language.ApiLanguage;
 import cn.xiaoheiban.parser.ApiParserDefinition;
+import cn.xiaoheiban.psi.nodes.ApiRootNode;
 import com.intellij.formatting.*;
 import com.intellij.formatting.alignment.AlignmentStrategy;
 import com.intellij.lang.ASTNode;
@@ -24,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ApiFormatter implements FormattingModelBuilder {
+    private static final IElementType ROOT = ApiParserDefinition.rule(ApiParser.RULE_api);
     private static final IElementType COLON = ApiParserDefinition.token(ApiLexer.COLON);
     private static final IElementType COMMENT = ApiParserDefinition.token(ApiLexer.COMMENT);
     private static final IElementType VALUE = ApiParserDefinition.token(ApiLexer.VALUE);
@@ -40,10 +42,12 @@ public class ApiFormatter implements FormattingModelBuilder {
     private static final IElementType FIELD_TYPE = ApiParserDefinition.rule(ApiParser.RULE_fieldType);
     private static final IElementType FIELD_TAG = ApiParserDefinition.rule(ApiParser.RULE_tag);
     private static final IElementType DOC = ApiParserDefinition.token(ApiLexer.ATDOC);
+    private static final IElementType DOC_VALUE = ApiParserDefinition.rule(ApiParser.RULE_docValue);
     private static final IElementType SERVER = ApiParserDefinition.token(ApiLexer.ATSERVER);
     private static final IElementType HANDLER = ApiParserDefinition.token(ApiLexer.ATHANDLER);
     private static final IElementType INFO = ApiParserDefinition.token(ApiLexer.INFO);
     private static final IElementType SERVICE_DOC = ApiParserDefinition.rule(ApiParser.RULE_serviceDoc);
+    private static final IElementType SERVICE_DOC_New = ApiParserDefinition.rule(ApiParser.RULE_serviceDocNew);
     private static final IElementType SERVICE_HANDLER = ApiParserDefinition.rule(ApiParser.RULE_serviceHandler);
     private static final IElementType INFO_STATEMENT = ApiParserDefinition.rule(ApiParser.RULE_infoStatement);
     private static final IElementType LPAREN = ApiParserDefinition.token(ApiParser.LPAREN);
@@ -85,6 +89,7 @@ public class ApiFormatter implements FormattingModelBuilder {
         builder.after(ROUTE).spaceIf(true);
         builder.around(RETURNS).spaceIf(true);
         builder.between(FIELD_TYPE, FIELD_TAG).spaceIf(true);
+        builder.between(DOC, DOC_VALUE).spaceIf(true);
         builder.between(LPAREN, RPAREN).none();
         builder.around(REFERENCE_ID).none();
         builder.between(INFO, LPAREN).none();
@@ -189,14 +194,23 @@ public class ApiFormatter implements FormattingModelBuilder {
             if (elementType.equals(FIELD)
                     || elementType.equals(KEY)
                     || elementType.equals(HTTP_METHOD)
-                    || elementType.equals(COMMENT)
                     || elementType.equals(GROUP_BODY)
                     || elementType.equals(SERVICE_DOC)
+                    || elementType.equals(SERVICE_DOC_New)
                     || elementType.equals(SERVICE_HANDLER)
                     || elementType.equals(HANDLER)
             ) {
                 indent = Indent.getNormalIndent();
+            } else if (elementType.equals(COMMENT)) {
+                ASTNode treeParent = child.getTreeParent();
+                if (treeParent != null) {
+                    IElementType pe = treeParent.getElementType();
+                    if (!pe.equals(ROOT)) {
+                        indent = Indent.getNormalIndent();
+                    }
+                }
             }
+
             return indent;
         }
 
@@ -230,20 +244,6 @@ public class ApiFormatter implements FormattingModelBuilder {
                 PsiElement parent = psi1.getParent();
                 IElementType parentElementType = parent.getNode().getElementType();
                 boolean oneLineType = !parent.textContains('\n');
-//                if (parent.getNode() != null && parent.getNode().getElementType().equals(STRUCT_TYPE)) {
-//                    if ((n1.getElementType().equals(STRUCT) || n1.getElementType().equals(INTERFACE)) && n2.getElementType().equals(LBRACE)) {
-//                        return none();
-//                    }
-//                    if (n1.getElementType() == LBRACE && n2.getElementType() == RBRACE) {
-//                        return none();
-//                    }
-//                    if (n1.getElementType() == LBRACE) {
-//                        return oneLineType ? none() : lineBreak(false);
-//                    }
-//                    if (n2.getElementType() == RBRACE) {
-//                        return oneLineType ? none() : lineBreak(false);
-//                    }
-//                }
                 if (n1.getElementType().equals(LBRACE) && n2.getElementType().equals(RBRACE)) {
                     if (parent.getText().contains("interface")) {
                         return none();
