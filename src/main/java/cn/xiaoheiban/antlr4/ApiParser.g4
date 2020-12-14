@@ -57,8 +57,9 @@ serviceServerSpec: ATSERVER LPAREN identPair RPAREN;
 
 serviceSpec: SERVICE serviceName LBRACE serviceBody+ RBRACE;
 serviceName:IDENT;
-serviceBody:serviceDoc? (serviceHandler|serviceHandlerNew) serviceRoute;
+serviceBody:(serviceDoc|serviceDocNew)? (serviceHandler|serviceHandlerNew) serviceRoute;
 serviceDoc: ATDOC LPAREN pair RPAREN;
+serviceDocNew: ATDOC docValue;
 serviceHandler: ATSERVER LPAREN handlerPair RPAREN;
 serviceHandlerNew: ATHANDLER handlerValue;
 serviceRoute:httpRoute (LPAREN referenceId? RPAREN)? (RETURNS LPAREN referenceId? RPAREN)? SMICOLON?;
@@ -68,5 +69,6 @@ handlerPair:(key COLON handlerValue)+;
 identValue:(IDENT ','?)+;
 handlerValue:IDENT;
 importValue:VALUE;
+docValue:VALUE;
 pair:(key COLON VALUE?)*;
 key:IDENT;

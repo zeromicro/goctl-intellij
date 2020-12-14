@@ -79,14 +79,14 @@
     </template>
 
     <template description='doc declaration' name='@doc' toReformat='true' toShortenFQNames='true'
-              value='@doc(&#10;    summary: ""&#10;)&#10;'>
+              value='@doc "$END$"'>
         <context>
             <option name='API_SERVICE' value='true'/>
         </context>
     </template>
 
     <template description='doc declaration' name='doc' toReformat='true' toShortenFQNames='true'
-              value='@doc(&#10;    summary: "$END$"&#10;)&#10;'>
+              value='@doc "$END$"'>
         <context>
             <option name='API_SERVICE' value='true'/>
         </context>
