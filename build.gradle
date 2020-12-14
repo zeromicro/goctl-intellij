@@ -43,7 +43,7 @@ patchPluginXml {
     changeNotes """
     <h1># 2020-12-14(v0.7.12-latest)</h1>
     <ul>
-        <li>Support frammar "@doc" </li>
+        <li>Support grammar "@doc" </li>
         <li>Optimize indent format of the comments </li>
     </ul>
     """
