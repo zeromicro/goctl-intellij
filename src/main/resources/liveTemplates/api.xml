@@ -1,8 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
 <templateSet group="Api">
+    <template description='syntax declaration' name='syntax' toReformat='true' toShortenFQNames='true'
+              value='syntax = "v1$END$"'>
+        <context>
+            <option name='API_FILE' value='true'/>
+        </context>
+    </template>
+
     <template description='import declaration' name='import' toReformat='true' toShortenFQNames='true'
-              value='import ""$END$'>
+              value='import "$END$"'>
         <context>
             <option name='API_FILE' value='true'/>
         </context>

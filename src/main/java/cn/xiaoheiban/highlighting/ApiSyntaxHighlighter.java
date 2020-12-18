@@ -55,6 +55,7 @@ public class ApiSyntaxHighlighter extends SyntaxHighlighterBase {
             TokenIElementType myType = (TokenIElementType) tokenType;
             int ttype = myType.getAntlrTokenType();
             switch (ttype) {
+                case ApiLexer.SYNTAX:
                 case ApiLexer.INFO:
                 case ApiLexer.MAP:
                 case ApiLexer.STRUCT:

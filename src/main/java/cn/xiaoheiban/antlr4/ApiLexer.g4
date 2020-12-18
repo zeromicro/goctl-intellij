@@ -1,6 +1,7 @@
 lexer grammar ApiLexer;
 
 // TOKEN
+SYNTAX:     'syntax';
 INFO:       'info';
 MAP:        'map';
 STRUCT:     'struct';
@@ -66,6 +67,7 @@ STAR:       '*';
 BAR:        '-';
 ASSIGN:     '=';
 COLON:      ':';
+SLASH:      '/';
 NUMBER:      DIGIT+;
 HOSTVALUE:        DIGIT+ '.' DIGIT+ '.' DIGIT+ '.' DIGIT+;
 

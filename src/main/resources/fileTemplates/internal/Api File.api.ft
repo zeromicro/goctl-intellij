@@ -1,3 +1,5 @@
+syntax = "v1"
+
 info(
     title: "type title here"
     desc: "type desc here"

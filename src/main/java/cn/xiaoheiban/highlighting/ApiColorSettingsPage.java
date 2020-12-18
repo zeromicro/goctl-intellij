@@ -21,76 +21,79 @@ public class ApiColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("String", ApiSyntaxHighlighter.STRING),
             new AttributesDescriptor("Comment", ApiSyntaxHighlighter.COMMENT)
     };
-    private static final String template = "info (\n" +
-            "    title:\"api highlighter\"\n" +
-            "    desc:\"api highlighter description\"\n" +
-            "    author:\"xiaoheiban\"\n" +
-            "    email:\"\"\n" +
-            "    version:\"1.0\"\n" +
+    private static final String template = "syntax = \"v1\"\n" +
+            "\n" +
+            "import \"commong.api\"\n" +
+            "\n" +
+            "info(\n" +
+            "    title: \"type title here\"\n" +
+            "    desc: \"type desc here\"\n" +
+            "    author: \"type author here\"\n" +
+            "    email: \"type email here\"\n" +
+            "    version: \"type version here\"\n" +
             ")\n" +
-            "\n" +
-            "type Gender int\n" +
-            "\n" +
-            "type Anonymous struct{}\n" +
-            "\n" +
-            "type Pointer struct{}\n" +
-            "\n" +
-            "type Struct struct {\n" +
-            "    // 字符串\n" +
-            "    String string `json:\"string\"`\n" +
-            "    // 性别\n" +
-            "    Gender Gender `json:\"gender\"`\n" +
-            "    // 匿名类型\n" +
-            "    Anonymous\n" +
-            "    // 指针类型\n" +
-            "    Pointer *Pointer\n" +
-            "    // map类型:key必须为go系统类型中的比较类型(number、string、bool)\n" +
-            "    M1 map[string]int\n" +
-            "    // 数组或切片类型\n" +
-            "    Array []string\n" +
-            "    // inline\n" +
-            "    Inline struct {\n" +
-            "        Name string\n" +
-            "    }\n" +
-            "}\n" +
+            "type alias int\n" +
             "\n" +
             "type (\n" +
-            "    LoginRequest struct{\n" +
-            "        // todo\n" +
+            "    User {\n" +
+            "        Name string `json:\"name\"`\n" +
             "    }\n" +
             "\n" +
-            "    LoginResponse struct{\n" +
-            "        // todo\n" +
-            "    }\n" +
-            "\n" +
-            "    UserInfoRequest struct{\n" +
-            "        Id string `path:\"id\"`\n" +
-            "    }\n" +
-            "\n" +
-            "    UserInfoResponse struct {\n" +
-            "        // todo\n" +
+            "    Person {\n" +
+            "        Name string `json:\"name\"`\n" +
             "    }\n" +
             ")\n" +
             "\n" +
-            "@server (\n" +
-            "   jwt: Auth\n" +
-            "   folder: user\n" +
-            ")\n" +
-            "service user {\n" +
-            "    @doc(\n" +
-            "        summary:\"login\"\n" +
-            "    )\n" +
-            "    @server(\n" +
-            "        handler: login\n" +
-            "    )\n" +
-            "    post /user/login (LoginRequest)returns(LoginResponse);\n" +
-            "    \n" +
-            "    @server(\n" +
-            "        handler: userInfo\n" +
-            "    )\n" +
-            "    get /user/info/:id () returns (UserInfoResponse);\n" +
+            "type Student {\n" +
+            "    Name string `json:\"name\"`\n" +
             "}\n" +
-            "\n";
+            "\n" +
+            "type Teacher {\n" +
+            "    Name string `json:\"name\"`\n" +
+            "    User\n" +
+            "}\n" +
+            "\n" +
+            "type LoginReq {\n" +
+            "    Username string `json:\"username\"`\n" +
+            "    password string `json:\"password\"`\n" +
+            "}\n" +
+            "\n" +
+            "type LoginReply {\n" +
+            "    Token string `json:\"token\"`\n" +
+            "    Expire int64 `json:\"expire\"`\n" +
+            "    RefreshToken string `json:\"refreshToken\"`\n" +
+            "}\n" +
+            "\n" +
+            "type UserInfoReply {\n" +
+            "    Name string `json:\"name\"`\n" +
+            "    Age int `json:\"age\"`\n" +
+            "    Gender string `json:\"gender\"`\n" +
+            "    Birthday string `json:\"birthday\"`\n" +
+            "}\n" +
+            "\n" +
+            "type UserPasswordEditReq {\n" +
+            "    OldPassword string `json:\"oldPassword\"`\n" +
+            "    NewPassword string `json:\"newPassword\"`\n" +
+            "}\n" +
+            "\n" +
+            "@server(\n" +
+            "    jwt: Auth\n" +
+            "    middleware: MetricMiddleware,LogMiddleware\n" +
+            "    group: user\n" +
+            ")\n" +
+            "service user-api {\n" +
+            "    @handler healthCheck\n" +
+            "    post /user/health/check\n" +
+            "\n" +
+            "    @handler login\n" +
+            "    post /user/login (LoginReq) returns (LoginReply)\n" +
+            "\n" +
+            "    @handler userInfo\n" +
+            "    get /user/info returns (UserInfoReply)\n" +
+            "\n" +
+            "    @handler passwordEdit\n" +
+            "    post /user/password/edit (UserPasswordEditReq)\n" +
+            "}";
 
     @Override
     public @Nullable Icon getIcon() {
