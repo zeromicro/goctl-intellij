@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'cn.xiaoheiban'
-version '0.7.13'
+version '0.7.14'
 
 repositories {
     mavenCentral()
@@ -41,9 +41,10 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
-    <h1># 2020-12-18(v0.7.13-latest)</h1>
+    <h1># 2020-12-18(v0.7.14-latest)</h1>
     <ul>
         <li>Add syantax 'syntax = "\$version"'</li>
+        <li>Support import group'</li>
         <li>Fix path syntax for group</li>
         <li>Optimize indent format of the comments </li>
     </ul>

@@ -20,7 +20,10 @@ apiBody:
 
 importStatement:importSpec+;
 
-importSpec: IMPORT importValue;
+importSpec: importLit|importGroup;
+importLit:IMPORT importValue;
+importGroup: IMPORT LPAREN importValue* RPAREN;
+
 // info
 infoStatement: INFO LPAREN pair RPAREN;
 
@@ -61,7 +64,7 @@ serviceSpec: SERVICE serviceName LBRACE serviceBody+ RBRACE;
 serviceName:IDENT;
 serviceBody:(serviceDoc|serviceDocNew)? (serviceHandler|serviceHandlerNew) serviceRoute;
 serviceDoc: ATDOC LPAREN pair RPAREN;
-serviceDocNew: ATDOC docValue;
+serviceDocNew: ATDOC (docValue|(LPAREN docValue RPAREN));
 serviceHandler: ATSERVER LPAREN handlerPair RPAREN;
 serviceHandlerNew: ATHANDLER handlerValue;
 serviceRoute:httpRoute (LPAREN referenceId? RPAREN)? (RETURNS LPAREN referenceId? RPAREN)? SMICOLON?;

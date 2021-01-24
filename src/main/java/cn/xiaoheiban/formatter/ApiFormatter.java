@@ -61,6 +61,7 @@ public class ApiFormatter implements FormattingModelBuilder {
     private static final IElementType HANDLER_PAIR = ApiParserDefinition.rule(ApiParser.RULE_handlerPair);
     private static final IElementType HANDLER_NEW = ApiParserDefinition.rule(ApiParser.RULE_serviceHandlerNew);
     private static final IElementType IMPORT = ApiParserDefinition.rule(ApiParser.RULE_importSpec);
+    private static final IElementType IMPORT_GROUP = ApiParserDefinition.rule(ApiParser.RULE_importGroup);
     private static final IElementType IDENT_PAIR = ApiParserDefinition.rule(ApiParser.RULE_identPair);
     private static final IElementType IDENT_PAIR_VALUE = ApiParserDefinition.rule(ApiParser.RULE_identValue);
     private static final Key<Alignment> TYPE_ALIGNMENT_INSIDE_STRUCT = Key.create("TYPE_ALIGNMENT_INSIDE_STRUCT");
@@ -206,6 +207,14 @@ public class ApiFormatter implements FormattingModelBuilder {
                 if (treeParent != null) {
                     IElementType pe = treeParent.getElementType();
                     if (!pe.equals(ROOT)) {
+                        indent = Indent.getNormalIndent();
+                    }
+                }
+            } else if (elementType.equals(IMPORT_VALUE)) {
+                ASTNode treeParent = child.getTreeParent();
+                if (treeParent != null) {
+                    IElementType pe = treeParent.getElementType();
+                    if (pe.equals(IMPORT_GROUP)) {
                         indent = Indent.getNormalIndent();
                     }
                 }
