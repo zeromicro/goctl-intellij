@@ -52,7 +52,8 @@ structType: structNameId STRUCT? LBRACE (typeFiled)* RBRACE;
 objType: normalFieldType|starFieldType;
 structNameId:IDENT;
 fieldName:IDENT;
-referenceId:IDENT;
+referenceId:pkg? IDENT;
+pkg: IDENT DOT;
 tag: RAW_STRING;
 
 // service
@@ -73,7 +74,7 @@ identPair:(key COLON identValue|PATH)*;
 handlerPair:(key COLON handlerValue)+;
 identValue:(IDENT ','?)+;
 handlerValue:IDENT;
-importValue:VALUE;
+importValue:VALUE (AS IDENT)?;
 docValue:VALUE;
 pair:(key COLON VALUE?)*;
 key:IDENT;

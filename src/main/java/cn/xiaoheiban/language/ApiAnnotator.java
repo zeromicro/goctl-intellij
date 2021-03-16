@@ -62,6 +62,9 @@ public class ApiAnnotator implements Annotator {
         } else if (element instanceof ServiceNameNode) {
             mHolder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);
         } else if (element instanceof ReferenceIdNode) {//RULE_referenceId
+            if (element.getText().contains(".")) {
+                return;
+            }
             if (allNode == null) {
                 ApiRootNode root = ApiFile.getRoot(element);
                 if (root == null) {

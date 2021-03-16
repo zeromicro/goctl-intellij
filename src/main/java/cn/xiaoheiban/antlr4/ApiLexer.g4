@@ -13,6 +13,7 @@ ATHANDLER:  '@handler';
 SERVICE:    'service';
 RETURNS:    'returns';
 IMPORT:     'import';
+AS:         'as';
 
 
 // HTTP METHOD
