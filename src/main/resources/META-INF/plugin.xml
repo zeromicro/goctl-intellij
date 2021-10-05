@@ -1,7 +1,7 @@
 <idea-plugin url="https://www.xiaoheiban.cn">
     <id>cn.xiaoheiban.go-zero</id>
     <name>Goctl</name>
-    <vendor email="anqiansong@gmail.cn" url="https://go-zero.dev">TAL</vendor>
+    <vendor email="anqiansong@gmail.cn" url="https://go-zero.dev">go-zero</vendor>
     <description><![CDATA[
      <a href="https://go-zero.dev/">go-zero</a> support for JetBrains products.
      <br>
