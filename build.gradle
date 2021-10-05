@@ -5,13 +5,10 @@ plugins {
 }
 
 group 'cn.xiaoheiban'
-version '0.7.15'
+version '0.7.16'
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://dl.bintray.com/antlr/maven/"
-    }
 }
 
 compileJava {
@@ -23,16 +20,13 @@ dependencies {
     antlr("org.antlr:antlr4:$antlr4Version") { // use ANTLR version 4
         exclude group: 'com.ibm.icu', module: 'icu4j'
     }
-    compile('org.antlr:antlr4-jetbrains-adapter:3.0.snapshot.efd2349681fbe1719e7115f0a4e8b82ecafe21b9') {
-        exclude group: 'com.jetbrains'
-        exclude group: 'org.slf4j'
-    }
+    compile fileTree(dir:'libs',include:['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2020.2.1'
+    version = '2021.2.1'
     pluginName = 'Goctl'
     downloadSources true
     updateSinceUntilBuild false
@@ -41,11 +35,9 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
-    <h1># 2021-03-16(v0.7.15)</h1>
+    <h1># 2021-10-05(v0.7.16)</h1>
     <ul>
-        <li>Supported syntax 'import as' </li>
-        <li>Supported package reference</li>
-        <li>Fixed known bugs</li>
+        <li>Fixed goctl not found</li>
     </ul>
     """
 }

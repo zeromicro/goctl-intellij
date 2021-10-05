@@ -1,15 +1,15 @@
 <idea-plugin url="https://www.xiaoheiban.cn">
     <id>cn.xiaoheiban.go-zero</id>
     <name>Goctl</name>
-    <vendor email="anqiansong@xiaoheiban.cn" url="http://www.100tal.com/">TAL</vendor>
+    <vendor email="anqiansong@gmail.cn" url="https://go-zero.dev">TAL</vendor>
     <description><![CDATA[
-     <a href="http://www.100tal.com/">TAL</a> support for JetBrains products.
+     <a href="https://go-zero.dev/">go-zero</a> support for JetBrains products.
      <br>
      <br>
      Support for Api programming language of tal.
      <br>
      <br>
-     <a href="https://github.com/tal-tech/go-zero">go-zero</a> is a web and rpc framework for golang that with
+     <a href="https://github.com/zeromicro/go-zero">go-zero</a> is a web and rpc framework for golang that with
      lots of engineering practices builtin. It’s born to ensure the stability of the busy services with resilience design,
       and has been serving sites with tens of millions users for years
      <br>

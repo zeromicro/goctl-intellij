@@ -14,7 +14,6 @@ import java.util.List;
 public class Exec {
 
     public static String lookPath(Project project, String s) {
-
         String os = System.getProperty("os.name");
         os = os.toLowerCase();
         String pathSeparator = File.pathSeparator;
@@ -23,20 +22,19 @@ public class Exec {
             pathCmd = "echo $PATH";
         } else if (os.startsWith("windows")) {
             pathCmd = "echo %Path%";
-            if (!s.endsWith(".exe")){
-                s=s.concat(".exe");
+            if (!s.endsWith(".exe")) {
+                s = s.concat(".exe");
             }
             pathSeparator = ";";
         } else {
-            Notification.getInstance().error(project, "unsupport os: " + os);
+            Notification.getInstance().error(project, "unsupported os: " + os);
             return null;
         }
 
-        if (s.contains(File.separator)) {
-            if (findExecutable(s)) {
-                return s;
-            }
+        if (findExecutable(s)) {
+            return s;
         }
+
         ExecResult result = run(project, pathCmd);
         if (result == null) {
             return "";
@@ -50,6 +48,7 @@ public class Exec {
             return "";
         }
 
+        Notification.getInstance().log(project, "lookup at PATH: " + path);
         String[] splits = path.split(pathSeparator);
         for (String dir : splits) {
             // Unix shell semantics: path element "" means "."
@@ -131,11 +130,23 @@ public class Exec {
 
     public static boolean runGoctl(Project project, String arg) {
         String goctl = lookPath(project, "goctl");
+        if (StringUtil.isEmptyOrSpaces(goctl)) {
+            String userHome = System.getProperty("user.home");
+            if (StringUtil.isEmptyOrSpaces(userHome)) {
+                Notification.getInstance().error(project, "goctl not found");
+                return false;
+            }
+            goctl = userHome + File.separator + "go" + File.separator + "bin" + File.separator + "goctl";
+        }
+
+        Notification.getInstance().log(project, "lookup at the default GOPATH: " + goctl);
+        goctl = lookPath(project, goctl);
         Notification.getInstance().log(project, "goctl:" + goctl);
         if (StringUtil.isEmptyOrSpaces(goctl)) {
             Notification.getInstance().error(project, "goctl not found");
             return false;
         }
+
         String cmd = goctl + " " + arg;
         ExecResult result = run(project, cmd);
         if (result == null) {
