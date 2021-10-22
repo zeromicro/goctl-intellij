@@ -52,7 +52,7 @@ RUNE:       'rune';
 TIME:       'time.Time';
 
 // HTTP PATH
-PATH:       (('/'|'/:'|'-') IDENT)+;
+PATH:       (('/'|'/:'|'-') IDENT)+ | SLASH;
 
 // MAKER
 LPAREN:     '(';

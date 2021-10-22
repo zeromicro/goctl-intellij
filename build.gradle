@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'cn.xiaoheiban'
-version '0.7.16'
+version '0.7.17'
 
 repositories {
     mavenCentral()
@@ -35,6 +35,11 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
+    <h1># 2021-10-22(v0.7.17)</h1>
+    <ul>
+        <li>Syntax support root path</li>
+    </ul>
+    
     <h1># 2021-10-05(v0.7.16)</h1>
     <ul>
         <li>Fixed goctl not found</li>

@@ -1,4 +1,4 @@
-// Generated from /Users/anqiansong/workspace/java/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiParser.g4 by ANTLR 4.9.1
+// Generated from /Users/bytedance/keson/workspace/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiParser.g4 by ANTLR 4.9.1
 package cn.xiaoheiban.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -163,6 +163,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_api; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitApi(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ApiContext api() throws RecognitionException {
@@ -241,6 +246,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_syntaxLit; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitSyntaxLit(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final SyntaxLitContext syntaxLit() throws RecognitionException {
@@ -279,6 +289,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_apiBody; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitApiBody(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ApiBodyContext apiBody() throws RecognitionException {
@@ -329,6 +344,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_importStatement; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitImportStatement(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ImportStatementContext importStatement() throws RecognitionException {
@@ -382,6 +402,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_importSpec; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitImportSpec(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ImportSpecContext importSpec() throws RecognitionException {
@@ -427,6 +452,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_importLit; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitImportLit(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ImportLitContext importLit() throws RecognitionException {
@@ -466,6 +496,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_importGroup; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitImportGroup(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ImportGroupContext importGroup() throws RecognitionException {
@@ -519,6 +554,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_infoStatement; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitInfoStatement(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InfoStatementContext infoStatement() throws RecognitionException {
@@ -559,6 +599,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeStatement; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeStatement(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeStatementContext typeStatement() throws RecognitionException {
@@ -607,6 +652,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeGroupSpec; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeGroupSpec(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeGroupSpecContext typeGroupSpec() throws RecognitionException {
@@ -653,6 +703,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeGroupBody; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeGroupBody(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeGroupBodyContext typeGroupBody() throws RecognitionException {
@@ -712,6 +767,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeGroupAlias; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeGroupAlias(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeGroupAliasContext typeGroupAlias() throws RecognitionException {
@@ -748,6 +808,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeSingleSpec; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeSingleSpec(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeSingleSpecContext typeSingleSpec() throws RecognitionException {
@@ -793,6 +858,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeStruct; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeStruct(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeStructContext typeStruct() throws RecognitionException {
@@ -831,6 +901,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeAlias; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeAlias(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeAliasContext typeAlias() throws RecognitionException {
@@ -883,6 +958,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_typeFiled; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTypeFiled(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeFiledContext typeFiled() throws RecognitionException {
@@ -940,6 +1020,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_normalField; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitNormalField(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final NormalFieldContext normalField() throws RecognitionException {
@@ -993,6 +1078,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fieldType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitFieldType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final FieldTypeContext fieldType() throws RecognitionException {
@@ -1056,6 +1146,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_anonymousField; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitAnonymousField(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final AnonymousFieldContext anonymousField() throws RecognitionException {
@@ -1102,6 +1197,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_normalFieldType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitNormalFieldType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final NormalFieldTypeContext normalFieldType() throws RecognitionException {
@@ -1162,6 +1262,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_starFieldType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitStarFieldType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final StarFieldTypeContext starFieldType() throws RecognitionException {
@@ -1199,6 +1304,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_mapFieldType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitMapFieldType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final MapFieldTypeContext mapFieldType() throws RecognitionException {
@@ -1246,6 +1356,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_arrayOrSliceType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitArrayOrSliceType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ArrayOrSliceTypeContext arrayOrSliceType() throws RecognitionException {
@@ -1303,6 +1418,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_structType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitStructType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final StructTypeContext structType() throws RecognitionException {
@@ -1366,6 +1486,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_objType; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitObjType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ObjTypeContext objType() throws RecognitionException {
@@ -1412,6 +1537,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_structNameId; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitStructNameId(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final StructNameIdContext structNameId() throws RecognitionException {
@@ -1441,6 +1571,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fieldName; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitFieldName(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final FieldNameContext fieldName() throws RecognitionException {
@@ -1473,6 +1608,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_referenceId; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitReferenceId(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ReferenceIdContext referenceId() throws RecognitionException {
@@ -1513,6 +1653,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_pkg; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitPkg(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final PkgContext pkg() throws RecognitionException {
@@ -1544,6 +1689,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tag; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitTag(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TagContext tag() throws RecognitionException {
@@ -1578,6 +1728,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceStatement; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceStatement(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceStatementContext serviceStatement() throws RecognitionException {
@@ -1625,6 +1780,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceServerSpec; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceServerSpec(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceServerSpecContext serviceServerSpec() throws RecognitionException {
@@ -1671,6 +1831,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceSpec; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceSpec(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceSpecContext serviceSpec() throws RecognitionException {
@@ -1721,6 +1886,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceName; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceName(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceNameContext serviceName() throws RecognitionException {
@@ -1764,6 +1934,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceBody; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceBody(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceBodyContext serviceBody() throws RecognitionException {
@@ -1832,6 +2007,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceDoc; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceDoc(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceDocContext serviceDoc() throws RecognitionException {
@@ -1872,6 +2052,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceDocNew; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceDocNew(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceDocNewContext serviceDocNew() throws RecognitionException {
@@ -1930,6 +2115,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceHandler; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceHandler(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceHandlerContext serviceHandler() throws RecognitionException {
@@ -1968,6 +2158,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceHandlerNew; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceHandlerNew(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceHandlerNewContext serviceHandlerNew() throws RecognitionException {
@@ -2017,6 +2212,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_serviceRoute; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitServiceRoute(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ServiceRouteContext serviceRoute() throws RecognitionException {
@@ -2104,6 +2304,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_httpRoute; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitHttpRoute(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final HttpRouteContext httpRoute() throws RecognitionException {
@@ -2154,6 +2359,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_identPair; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitIdentPair(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IdentPairContext identPair() throws RecognitionException {
@@ -2229,6 +2439,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_handlerPair; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitHandlerPair(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final HandlerPairContext handlerPair() throws RecognitionException {
@@ -2282,6 +2497,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_identValue; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitIdentValue(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IdentValueContext identValue() throws RecognitionException {
@@ -2341,6 +2561,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_handlerValue; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitHandlerValue(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final HandlerValueContext handlerValue() throws RecognitionException {
@@ -2372,6 +2597,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_importValue; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitImportValue(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ImportValueContext importValue() throws RecognitionException {
@@ -2414,6 +2644,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_docValue; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitDocValue(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DocValueContext docValue() throws RecognitionException {
@@ -2456,6 +2691,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_pair; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitPair(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final PairContext pair() throws RecognitionException {
@@ -2510,6 +2750,11 @@ public class ApiParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_key; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ApiParserVisitor ) return ((ApiParserVisitor<? extends T>)visitor).visitKey(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final KeyContext key() throws RecognitionException {
