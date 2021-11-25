@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'cn.xiaoheiban'
-version '0.7.17'
+version '0.7.18'
 
 repositories {
     mavenCentral()
@@ -35,6 +35,11 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
+    <h1># 2021-11-25(v0.7.18)</h1>
+    <ul>
+        <li>Fix duplicate routes error if there declared 'prefix' </li>
+    </ul>
+    
     <h1># 2021-10-22(v0.7.17)</h1>
     <ul>
         <li>Syntax support root path</li>
