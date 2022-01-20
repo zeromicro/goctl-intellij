@@ -31,7 +31,8 @@ public abstract class IReference extends PsiReferenceBase<IdentifierPSINode> {
         ScopeNode scope = (ScopeNode) myElement.getContext();
         if (scope == null) return null;
 
-        return scope.resolve(myElement);
+        PsiElement resolve = scope.resolve(myElement);
+        return resolve;
     }
 
     @Override

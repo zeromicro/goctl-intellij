@@ -10,6 +10,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import org.antlr.jetbrains.adapter.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -65,6 +66,8 @@ public class ApiAnnotator implements Annotator {
             if (element.getText().contains(".")) {
                 return;
             }
+
+
             if (allNode == null) {
                 ApiRootNode root = ApiFile.getRoot(element);
                 if (root == null) {
@@ -77,8 +80,18 @@ public class ApiAnnotator implements Annotator {
                 holder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);
                 return;
             }
+
+            Set<ApiRootNode> apiRootNode = ApiRootNode.getApiRootNode(element);
+            for (ApiRootNode node : apiRootNode) {
+                Map<IElementType, List<ASTNode>> allNode = node.getAllNode();
+                if (ApiRootNode.resolve(allNode, ApiParserDefinition.rule(ApiParser.RULE_structNameId), name)) {
+                    holder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);
+                    return;
+                }
+            }
             holder.createErrorAnnotation(element, "can not resolve " + name);
         }
     }
+
 
 }

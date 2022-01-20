@@ -1,12 +1,18 @@
 package cn.xiaoheiban.psi.nodes;
 
 import cn.xiaoheiban.antlr4.ApiParser;
+import cn.xiaoheiban.language.ApiFileType;
 import cn.xiaoheiban.parser.ApiParserDefinition;
 import cn.xiaoheiban.psi.ApiFile;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.io.FileUtilRt;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.ArrayListSet;
 import org.antlr.jetbrains.adapter.SymtabUtils;
 import org.antlr.jetbrains.adapter.psi.ScopeNode;
 import org.apache.commons.collections.map.HashedMap;
@@ -74,6 +80,16 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
         return ret;
     }
 
+    public static Set<String> getImports(PsiElement element) {
+        List<ASTNode> nodes = ApiFile.findChildren(element, ApiParserDefinition.rule(ApiParser.RULE_importValue));
+        Set<String> set = new ArrayListSet<>();
+        for (ASTNode node : nodes) {
+            String text = node.getLastChildNode().getText();
+            set.add(text.replaceAll("\"", ""));
+        }
+        return set;
+    }
+
     public Map<String, Set<StructNameNode>> getAllStructMap() {
         Map<String, Set<StructNameNode>> ret = new HashedMap();
         Set<ASTNode> nodeSet = new HashSet<>();
@@ -108,20 +124,145 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
 
     @Override
     public @Nullable PsiElement resolve(PsiNamedElement element) {
-        PsiElement psiElement = SymtabUtils.resolve(this, ApiParserDefinition.ELEMENT_FACTORY, element, "/api/apiBody/typeStatement/typeSingleSpec/typeAlias/structNameId/IDENT");
+        PsiElement resolve = resolve(this, element, "");
+        if (resolve != null) {
+            return resolve;
+        }
+        Project project = element.getProject();
+        Set<String> pathSet = getImports(this);
+        VirtualFile[] virtualFiles = ProjectRootManager.getInstance(project).getContentRoots();
+        for (VirtualFile virtualFile : virtualFiles) {
+            PsiDirectory directory = PsiManager.getInstance(project).findDirectory(virtualFile);
+            if (null == directory) {
+                continue;
+            }
+            PsiElement psiElement = resolve(directory, element, pathSet);
+            if (psiElement != null) {
+                return psiElement;
+            }
+        }
+        return null;
+    }
+
+    public static Set<ApiRootNode> getApiRootNode(PsiElement element) {
+        ApiRootNode root = ApiFile.getRoot(element);
+        if (root==null){
+            return new ArrayListSet<>();
+        }
+        Project project = element.getProject();
+        Set<String> pathSet = getImports(root);
+        VirtualFile[] virtualFiles = ProjectRootManager.getInstance(project).getContentRoots();
+        Set<ApiRootNode> set = new ArrayListSet<>();
+        for (VirtualFile virtualFile : virtualFiles) {
+            PsiDirectory directory = PsiManager.getInstance(project).findDirectory(virtualFile);
+            if (null == directory) {
+                continue;
+            }
+            List<ApiRootNode> apiRootNode = getApiRootNode(directory,pathSet);
+            for (ApiRootNode node : apiRootNode) {
+                set.add(node);
+            }
+        }
+        return set;
+    }
+
+    private static List<ApiRootNode> getApiRootNode(PsiDirectory directory,Set<String> pathSet) {
+        List<ApiRootNode> list = new ArrayList<>();
+        PsiFile[] files = directory.getFiles();
+        for (PsiFile file : files) {
+            if (!(file.getFileType() instanceof ApiFileType)) {
+                continue;
+            }
+            PsiElement[] children = file.getChildren();
+            for (PsiElement psi : children) {
+                if (!(psi instanceof ApiRootNode)) {
+                    continue;
+                }
+                ApiRootNode apiRootNode = (ApiRootNode) (psi);
+                String filePath = apiRootNode.getContainingFile().getVirtualFile().getPath();
+                boolean contains = false;
+                for (String path : pathSet) {
+                    if (filePath.endsWith(path)) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains){
+                    continue;
+                }
+                list.add(apiRootNode);
+            }
+        }
+        PsiDirectory[] subdirectories = directory.getSubdirectories();
+        if (subdirectories.length == 0) {
+            return list;
+        }
+
+        for (PsiDirectory d : subdirectories) {
+            List<ApiRootNode> apiRootNode = getApiRootNode(d,pathSet);
+            list.addAll(apiRootNode);
+        }
+        return list;
+    }
+
+    private PsiElement resolve(PsiDirectory directory, PsiNamedElement element, Set<String> expectedPath) {
+        PsiFile[] files = directory.getFiles();
+        for (PsiFile file : files) {
+            if (!(file.getFileType() instanceof ApiFileType)) {
+                continue;
+            }
+            PsiElement[] children = file.getChildren();
+            for (PsiElement psi : children) {
+                if (!(psi instanceof ApiRootNode)) {
+                    continue;
+                }
+                ApiRootNode apiRootNode = (ApiRootNode) (psi);
+                String filePath = apiRootNode.getContainingFile().getVirtualFile().getPath();
+                boolean contains = false;
+                for (String path : expectedPath) {
+                    if (filePath.endsWith(path)) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains) {
+                    continue;
+                }
+                PsiElement resolve = resolve(apiRootNode, element, "");
+                if (resolve != null) {
+                    return resolve;
+                }
+            }
+        }
+        PsiDirectory[] subdirectories = directory.getSubdirectories();
+        if (subdirectories.length == 0) {
+            return null;
+        }
+
+        for (PsiDirectory d : subdirectories) {
+            PsiElement psiElement = resolve(d);
+            if (psiElement != null) {
+                return psiElement;
+            }
+        }
+        return null;
+    }
+
+    public @Nullable PsiElement resolve(ScopeNode scope, PsiNamedElement element, String basePath) {
+        PsiElement psiElement = SymtabUtils.resolve(scope, ApiParserDefinition.ELEMENT_FACTORY, element, basePath + "/api/apiBody/typeStatement/typeSingleSpec/typeAlias/structNameId/IDENT");
         if (psiElement != null) {
             return psiElement;
         }
-        psiElement = SymtabUtils.resolve(this, ApiParserDefinition.ELEMENT_FACTORY, element, "/api/apiBody/typeStatement/typeSingleSpec/typeStruct/structType/structNameId/IDENT");
+        psiElement = SymtabUtils.resolve(scope, ApiParserDefinition.ELEMENT_FACTORY, element, basePath + "/api/apiBody/typeStatement/typeSingleSpec/typeStruct/structType/structNameId/IDENT");
         if (psiElement != null) {
             return psiElement;
         }
-        psiElement = SymtabUtils.resolve(this, ApiParserDefinition.ELEMENT_FACTORY, element, "/api/apiBody/typeStatement/typeGroupSpec/typeGroupBody/typeGroupAlias/structNameId/IDENT");
+        psiElement = SymtabUtils.resolve(scope, ApiParserDefinition.ELEMENT_FACTORY, element, basePath + "/api/apiBody/typeStatement/typeGroupSpec/typeGroupBody/typeGroupAlias/structNameId/IDENT");
         if (psiElement != null) {
             return psiElement;
         }
 
-        psiElement = SymtabUtils.resolve(this, ApiParserDefinition.ELEMENT_FACTORY, element, "/api/apiBody/typeStatement/typeGroupSpec/typeGroupBody/structType/structNameId/IDENT");
+        psiElement = SymtabUtils.resolve(scope, ApiParserDefinition.ELEMENT_FACTORY, element, basePath + "/api/apiBody/typeStatement/typeGroupSpec/typeGroupBody/structType/structNameId/IDENT");
         return psiElement;
     }
 }
