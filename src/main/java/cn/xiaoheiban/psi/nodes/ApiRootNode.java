@@ -240,7 +240,7 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
         }
 
         for (PsiDirectory d : subdirectories) {
-            PsiElement psiElement = resolve(d);
+            PsiElement psiElement = resolve(d,element,expectedPath);
             if (psiElement != null) {
                 return psiElement;
             }
