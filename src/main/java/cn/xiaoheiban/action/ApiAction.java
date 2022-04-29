@@ -44,15 +44,15 @@ public class ApiAction extends AnAction {
             return;
         }
         String parent = file.getParent().getPath();
-        FileChooseDialog dialog = new FileChooseDialog("请选择生成目录", "取消");
+        FileChooseDialog dialog = new FileChooseDialog("Generation Option", "Cancel",false);
         dialog.setDefaultPath(parent);
         dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
             @Override
-            public void onOk(String p) {
+            public void onOk(String p, String style) {
                 ProgressManager.getInstance().run(new Task.Backgroundable(project, "generating api ...") {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
-                        boolean done = Exec.runGoctl(project, "api go -api " + file.getPath() + " -dir " + p);
+                        boolean done = Exec.runGoctl(project, "api go -api " + file.getPath() + " --style " + style + " -dir " + p);
                         if (done) {
                             FileReload.reloadFromDisk(e);
                             Notification.getInstance().notify(project, "generate api done");

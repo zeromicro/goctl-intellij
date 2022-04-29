@@ -64,7 +64,7 @@
 
     <actions>
         <action id="Api.NewApiFile" class="cn.xiaoheiban.action.ApiCreateFileAction"
-                text="Api File" description="Create new Api file">
+                text="API File" description="Create new Api file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
@@ -75,25 +75,25 @@
 
         <group id="GoZeroEditorGroup" text="Go Zero" popup="true">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
-            <action class="cn.xiaoheiban.action.ApiAction" id="EditorApiAction" text="Api Code"
+            <action class="cn.xiaoheiban.action.ApiAction" id="EditorApiAction" text="API Code Generation"
                     description="Generate api"/>
-            <action class="cn.xiaoheiban.action.RpcAction" id="EditorRpcAction" text="Rpc Code"
+            <action class="cn.xiaoheiban.action.RpcAction" id="EditorRpcAction" text="ZRPC Code Generation"
                     description="Generate rpc code"/>
-            <action class="cn.xiaoheiban.action.ModelAction" id="EditorModelAction" text="Model Code"
+            <action class="cn.xiaoheiban.action.ModelAction" id="EditorModelAction" text="Model Code Generation"
                     description="Generate model code"/>
         </group>
 
         <group id="GoZeroProjectNewGroup" text="Go Zero" popup="true">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
-            <action class="cn.xiaoheiban.action.ApiNewAction" id="ProjectApiNewAction" text="Api Greet Service"
+            <action class="cn.xiaoheiban.action.ApiNewAction" id="ProjectApiNewAction" text="API Greet Service"
                     description="Generate Api greet service"/>
-            <action class="cn.xiaoheiban.action.RpcNewAction" id="ProjectRpcNewAction" text="Rpc Greet Service"
+            <action class="cn.xiaoheiban.action.RpcNewAction" id="ProjectRpcNewAction" text="ZRPC Greet Service"
                     description="Generate rpc greet service"/>
-            <action class="cn.xiaoheiban.action.ApiAction" id="ProjectTemplateAction" text="Api Code"
+            <action class="cn.xiaoheiban.action.ApiAction" id="ProjectTemplateAction" text="API Code Generation"
                     description="Generate api"/>
-            <action class="cn.xiaoheiban.action.RpcAction" id="ProjectRpcAction" text="Rpc Code"
+            <action class="cn.xiaoheiban.action.RpcAction" id="ProjectRpcAction" text="ZRPC Code Generation"
                     description="Generate rpc code"/>
-            <action class="cn.xiaoheiban.action.ModelAction" id="ProjectModelAction" text="Model Code"
+            <action class="cn.xiaoheiban.action.ModelAction" id="ProjectModelAction" text="Model Code Generation"
                     description="Generate model code"/>
         </group>
     </actions>

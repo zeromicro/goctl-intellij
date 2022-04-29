@@ -26,7 +26,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.2.1'
+    version = '2021.3.2'
     pluginName = 'Goctl'
     downloadSources true
     updateSinceUntilBuild false

@@ -4,6 +4,8 @@ import cn.xiaoheiban.contsant.Constant;
 import cn.xiaoheiban.io.IO;
 import cn.xiaoheiban.notification.Notification;
 import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.process.ProcessOutput;
+import com.intellij.execution.util.ExecUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 
@@ -92,6 +94,8 @@ public class Exec {
         private String stdout;
         private String stderr;
 
+        private int exitCode;
+
         public String getStdout() {
             return stdout;
         }
@@ -107,6 +111,14 @@ public class Exec {
         public void setStderr(String stderr) {
             this.stderr = stderr;
         }
+
+        public int getExitCode() {
+            return exitCode;
+        }
+
+        public void setExitCode(int exitCode) {
+            this.exitCode = exitCode;
+        }
     }
 
     public static ExecResult run(Project project, String arg) {
@@ -117,12 +129,14 @@ public class Exec {
                 return null;
             }
             GeneralCommandLine commandLine = new GeneralCommandLine(cmd);
-            Process process = commandLine.createProcess();
-            result.setStdout(IO.read(process.getInputStream()));
-            result.setStderr(IO.read(process.getErrorStream()));
+            ProcessOutput processOutput = ExecUtil.execAndGetOutput(commandLine);
+            result.setStdout( processOutput.getStdout());
+            result.setStderr(processOutput.getStderr());
+            result.setExitCode(processOutput.getExitCode());
             return result;
         } catch (Exception e) {
             e.printStackTrace();
+            result.setExitCode(1);
             result.setStderr(e.toString());
         }
         return result;
@@ -155,22 +169,29 @@ public class Exec {
         Notification.getInstance().log(project, "$ goctl " + arg);
         String stdout = result.getStdout();
         String stderr = result.getStderr();
-        if (!StringUtil.isEmptyOrSpaces(stdout)) {
-            if (stdout.startsWith(Constant.PREFIX_SUCCESS)) {
-                Notification.getInstance().log(project, result.getStdout());
-            } else if (stdout.startsWith(Constant.PREFIX_WARNING)) {
-                Notification.getInstance().warning(project, result.getStdout());
-            } else if (stdout.startsWith(Constant.PREFIX_ERROR) || stdout.contains(Constant.PREFIX_ERROR2)) {
-                Notification.getInstance().error(project, result.getStdout());
-                return false;
-            } else {
-                Notification.getInstance().log(project, result.getStdout());
+        Notification.getInstance().log(project,"Exit code "+result.exitCode);
+        if (result.exitCode == 0) {
+            if (!StringUtil.isEmptyOrSpaces(stdout)) {
+                if (stdout.startsWith(Constant.PREFIX_SUCCESS)) {
+                    Notification.getInstance().log(project, result.getStdout());
+                } else if (stdout.startsWith(Constant.PREFIX_WARNING)) {
+                    Notification.getInstance().warning(project, stdout);
+                } else if (stdout.startsWith(Constant.PREFIX_ERROR) || stdout.contains(Constant.PREFIX_ERROR2)) {
+                    Notification.getInstance().error(project, stdout);
+                    return false;
+                } else {
+                    Notification.getInstance().log(project, stdout);
+                }
             }
             return true;
+        } else {
+            if (!StringUtil.isEmptyOrSpaces(stdout)) {
+                Notification.getInstance().error(project, stdout);
+            }
+            if (!StringUtil.isEmptyOrSpaces(stderr)) {
+                Notification.getInstance().error(project, stderr);
+            }
+            return false;
         }
-        if (!StringUtil.isEmptyOrSpaces(stderr)) {
-            Notification.getInstance().error(project, stderr);
-        }
-        return false;
     }
 }

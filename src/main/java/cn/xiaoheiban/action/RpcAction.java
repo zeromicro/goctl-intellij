@@ -53,36 +53,31 @@ public class RpcAction extends AnAction {
         try {
             String parent = file.getParent().getPath();
             String content = IO.read(file.getInputStream());
-            if (content.contains("import")) {
-                FileChooseDialog dialog = new FileChooseDialog("请选择proto_path","跳过");
-                dialog.setDefaultPath(parent);
-                dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
-                    @Override
-                    public void onOk(String p) {
-                        generateRpc(project, p, path, parent, e);
-                    }
+            FileChooseDialog dialog = new FileChooseDialog("Generation Option", "Cancel", content.contains("import"));
+            dialog.setDefaultPath(parent);
+            dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
+                @Override
+                public void onOk(String protoPath, String style) {
+                    generateRpc(project, protoPath, path, parent, style, e);
+                }
 
-                    @Override
-                    public void onJump() {
-                        generateRpc(project, "", path, parent, e);
-                    }
-                });
-                dialog.showAndGet();
-                return;
-            }
-            generateRpc(project, "", path, parent, e);
+                @Override
+                public void onJump() {
+                }
+            });
+            dialog.showAndGet();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
-    private void generateRpc(Project project, String protoPath, String src, String target, AnActionEvent e) {
+    private void generateRpc(Project project, String protoPath, String src, String target, String style, AnActionEvent e) {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "generating rpc ...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                String command = "rpc proto -src " + src + " -dir " + target + " -idea";
+                String command = "rpc protoc " + src + " --style " + style + " --zrpc_out " + target + " --go_out " + target + " --go-grpc_out " + target;
                 if (!StringUtil.isEmptyOrSpaces(protoPath)) {
-                    command = "rpc proto -src " + src + " -I=" + protoPath + " -dir " + target + " -idea";
+                    command = "rpc protoc " + src + " -I=" + protoPath + " --style " + style + " --zrpc_out " + target + " --go_out " + target + " --go-grpc_out " + target;
                 }
                 boolean done = Exec.runGoctl(project, command);
                 if (done) {
