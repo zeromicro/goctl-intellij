@@ -15,10 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Exec {
-    private static final String BASH = "bash";
     private static final String SH = "sh";
     private static final String FISH = "fish";
-    private static final String ZSH = "zsh";
     private static final String DEFAULT_SHELL = SH;
     private static final String COLON_SEPARATOR = ":";
     private static final String SPACE_SEPARATOR = " ";
@@ -50,15 +48,10 @@ public class Exec {
             if (project != null) {
                 Notification.getInstance().log(project, "Use shell: " + currentShell);
             }
-            switch (currentShell) {
-                case SH:
-                case BASH:
-                case ZSH:
-                    pathSeparator = COLON_SEPARATOR;
-                case FISH:// Fix issue #13
-                    pathSeparator = SPACE_SEPARATOR;
-                default:
-                    pathSeparator = COLON_SEPARATOR;
+            if (FISH.equals(currentShell)) {// Fix issue #13
+                pathSeparator = SPACE_SEPARATOR;
+            } else {
+                pathSeparator = COLON_SEPARATOR;
             }
             pathCmd = "echo $PATH";
         } else if (os.startsWith("windows")) {
