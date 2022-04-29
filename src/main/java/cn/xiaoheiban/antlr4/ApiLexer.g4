@@ -53,7 +53,7 @@ TIME:       'time.Time';
 
 // HTTP PATH
 PATH:       (('/'|'/:'|'-') IDENT)+ | SLASH;
-DURATION:   NUMBER ('ms'|'s'|'m'|'h');
+DURATION:   NUMBER ('ns'|'us'|'µs'|'ms'|'s'|'m'|'h');
 
 // MAKER
 LPAREN:     '(';
