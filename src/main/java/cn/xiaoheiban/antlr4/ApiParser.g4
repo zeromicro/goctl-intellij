@@ -70,7 +70,7 @@ serviceHandler: ATSERVER LPAREN handlerPair RPAREN;
 serviceHandlerNew: ATHANDLER handlerValue;
 serviceRoute:httpRoute (LPAREN referenceId? RPAREN)? (RETURNS LPAREN referenceId? RPAREN)? SMICOLON?;
 httpRoute:HTTPMETHOD PATH;
-identPair:(key COLON identValue|PATH)*;
+identPair:(key COLON (DURATION|identValue|PATH))*;
 handlerPair:(key COLON handlerValue)+;
 identValue:(IDENT ','?)+;
 handlerValue:IDENT;
