@@ -16,6 +16,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 public class ApiAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -44,15 +46,31 @@ public class ApiAction extends AnAction {
             return;
         }
         String parent = file.getParent().getPath();
-        FileChooseDialog dialog = new FileChooseDialog("Generation Option", "Cancel",false);
+        FileChooseDialog dialog = new FileChooseDialog("API Generate Option", "Cancel", false);
         dialog.setDefaultPath(parent);
         dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
             @Override
-            public void onOk(String p, String style) {
+            public void onOk(String goctlHome, String output, String protoPath, String style) {
                 ProgressManager.getInstance().run(new Task.Backgroundable(project, "generating api ...") {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
-                        boolean done = Exec.runGoctl(project, "api go -api " + file.getPath() + " --style " + style + " -dir " + p);
+                        String arg = "api go -api " + file.getPath() + " -dir " + output;
+                        if (!StringUtil.isEmptyOrSpaces(style)) {
+                            arg += " --style " + style;
+                        }
+                        if (!StringUtil.isEmptyOrSpaces(goctlHome)) {
+                            File file = new File(goctlHome);
+                            if (!file.exists()) {
+                                Notification.getInstance().warning(project, "goctlHome " + goctlHome + " is not exists");
+                            } else {
+                                if (file.isDirectory()) {
+                                    arg += " --home " + goctlHome;
+                                } else {
+                                    Notification.getInstance().warning(project, "goctlHome " + goctlHome + " is not a directory");
+                                }
+                            }
+                        }
+                        boolean done = Exec.runGoctl(project, arg);
                         if (done) {
                             FileReload.reloadFromDisk(e);
                             Notification.getInstance().notify(project, "generate api done");

@@ -77,9 +77,18 @@
             <add-to-group group-id="GenerateGroup" anchor="first"/>
             <action class="cn.xiaoheiban.action.ApiAction" id="EditorApiAction" text="API Code Generation"
                     description="Generate api"/>
+            <action class="cn.xiaoheiban.action.ApiQuickAction" id="EditorApiQuickAction"
+                    text="API Quick Code Generation"
+                    description="Generate api"/>
             <action class="cn.xiaoheiban.action.RpcAction" id="EditorRpcAction" text="ZRPC Code Generation"
                     description="Generate rpc code"/>
+            <action class="cn.xiaoheiban.action.RpcQuickAction" id="EditorRpcQuickAction"
+                    text="ZRPC Quick Code Generation"
+                    description="Generate rpc code"/>
             <action class="cn.xiaoheiban.action.ModelAction" id="EditorModelAction" text="Model Code Generation"
+                    description="Generate model code"/>
+            <action class="cn.xiaoheiban.action.ModelQuickAction" id="EditorModelQuickAction"
+                    text="Model Quick Code Generation"
                     description="Generate model code"/>
         </group>
 
@@ -89,11 +98,20 @@
                     description="Generate Api greet service"/>
             <action class="cn.xiaoheiban.action.RpcNewAction" id="ProjectRpcNewAction" text="ZRPC Greet Service"
                     description="Generate rpc greet service"/>
-            <action class="cn.xiaoheiban.action.ApiAction" id="ProjectTemplateAction" text="API Code Generation"
+            <action class="cn.xiaoheiban.action.ApiAction" id="ProjectAPIAction" text="API Code Generation"
+                    description="Generate api"/>
+            <action class="cn.xiaoheiban.action.ApiQuickAction" id="ProjectAPIQuickAction"
+                    text="API Quick Code Generation"
                     description="Generate api"/>
             <action class="cn.xiaoheiban.action.RpcAction" id="ProjectRpcAction" text="ZRPC Code Generation"
                     description="Generate rpc code"/>
+            <action class="cn.xiaoheiban.action.RpcQuickAction" id="ProjectRpcQuickAction"
+                    text="ZRPC Quick Code Generation"
+                    description="Generate rpc code"/>
             <action class="cn.xiaoheiban.action.ModelAction" id="ProjectModelAction" text="Model Code Generation"
+                    description="Generate model code"/>
+            <action class="cn.xiaoheiban.action.ModelQuickAction" id="ProjectQuickModelAction"
+                    text="Model Quick Code Generation"
                     description="Generate model code"/>
         </group>
     </actions>

@@ -9,7 +9,6 @@ import cn.xiaoheiban.util.FileReload;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.fileChooser.FileChooserDialog;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-public class RpcAction extends AnAction {
+public class RpcQuickAction extends AnAction {
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -55,6 +54,11 @@ public class RpcAction extends AnAction {
         try {
             String parent = file.getParent().getPath();
             String content = IO.read(file.getInputStream());
+            boolean hasImport = content.contains("import");
+            if (!hasImport) {
+                generateRpc(project, "", "", path, parent, "", e);
+                return;
+            }
             FileChooseDialog dialog = new FileChooseDialog("zRPC Generate Option", "Cancel", content.contains("import"));
             dialog.setDefaultPath(parent);
             dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
@@ -82,7 +86,10 @@ public class RpcAction extends AnAction {
                 if (!StringUtil.isEmptyOrSpaces(protoPath) && !protoPath.equals(protoDir)) {
                     command += " -I " + protoPath;
                 }
-                command += " " + src + " --style " + style + " --zrpc_out " + target + " --go_out " + target + " --go-grpc_out " + target;
+                if (!StringUtil.isEmptyOrSpaces(style)) {
+                    command += " --style " + style;
+                }
+                command += " " + src + " --zrpc_out " + target + " --go_out " + target + " --go-grpc_out " + target;
                 if (!StringUtil.isEmptyOrSpaces(goctlHome)) {
                     File file = new File(goctlHome);
                     if (!file.exists()) {
