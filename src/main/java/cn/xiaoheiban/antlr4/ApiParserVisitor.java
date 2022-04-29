@@ -1,4 +1,3 @@
-// Generated from /Users/keson/keson/workspace/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiParser.g4 by ANTLR 4.10.1
 package cn.xiaoheiban.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -154,12 +153,6 @@ public interface ApiParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStructType(ApiParser.StructTypeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ApiParser#objType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitObjType(ApiParser.ObjTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ApiParser#structNameId}.
 	 * @param ctx the parse tree
