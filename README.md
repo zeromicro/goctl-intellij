@@ -1,9 +1,9 @@
-# Go-Zero Plugin
+# goctl intellij  Plugin
+中文简体 | [English](README_EN.md)
 
 [![go-zero](https://img.shields.io/badge/Github-go--zero-brightgreen?logo=github)](https://github.com/tal-tech/go-zero)
 [![license](https://img.shields.io/badge/License-MIT-blue)](https://github.com/zeromicro/goctl-intellij/blob/main/LICENSE)
-[![license](https://img.shields.io/badge/Release-0.7.14-red)](https://github.com/zeromicro/goctl-intellij/releases)
-[![Java CI with Gradle](https://github.com/zeromicro/goctl-intellij/workflows/Java%20CI%20with%20Gradle/badge.svg)](https://github.com/zeromicro/goctl-intellij/actions)
+[![license](https://img.shields.io/badge/Release-1.1.0-red)](https://github.com/zeromicro/goctl-intellij/releases)
 
 # 介绍
 一款支持go-zero api语言结构语法高亮、检测以及api、rpc、model快捷生成的插件工具。
@@ -37,32 +37,74 @@
 
 # 新建 Api file
 
-在工程区域目标文件夹`右键->New-> New Api File ->Empty File/Api Template`,如图：
+在工程区域目标文件夹`右键 -> New -> New Api File -> Empty File/Api Template`,如图：
 
+![preview](./src/main/resources/static/api_new.png)
 ![preview](./src/main/resources/static/new.png)
 
 # 新建 Proto File
-在工程区目标文件夹`右键->New-> New Proto File -> Empty File/Proto Template`,如图：
-
+在工程区目标文件夹`右键 -> New -> New Proto File -> Empty File/Proto Template`,如图：
+![preview](./src/main/resources/static/new_proto.png)
 ![preview](./src/main/resources/static/proto.png)
 
 # 快速生成api/rpc服务
-在目标文件夹`右键->New->Go Zero -> Api Greet Service/Rpc Greet Service`
+在目标文件夹`右键 -> New -> Go Zero -> Api Greet Service/Rpc Greet Service`
 
 ![preview](./src/main/resources/static/service.png)
 
-# Api/Rpc/Model Code生成
+# Api 代码生成
+## 1. api 文件右键生成
+![preview](./src/main/resources/static/project_api_code_gen.png)
 
-## 方法一(工程区域)
+## 2. api 文件编辑区右键生成
+![preview](./src/main/resources/static/editor_api_code_gen.png)
 
-对应文件（api、proto、sql）`右键->New->Go Zero-> Api/Rpc/Model Code`,如图：
+## Api 代码生成说明
+`API Code Generation` 和 `API Quick Code Generation` 的区别是：
+- `API Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+    ```shell
+    $ goctl api go --api=${API 文件路径} --style=gozero --home="~/.goctl" --dir=${API 文件所在文件夹}
+    ```
+- `API Quick Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home` 等信息
+  ![preview](./src/main/resources/static/api_code_gen_dialog.png)
 
-![preview](./src/main/resources/static/project_generate_code.png)
+# zRPC 代码生成
+## 1. proto 文件右键生成
+![preview](./src/main/resources/static/project_zrpc_code_gen.png)
 
-## 方法二（编辑区域）
-对应文件（api、proto、sql）`右键-> Generate-> Api/Rpc/Model Code`
+## 2. proto 文件编辑区右键生成
+![preview](./src/main/resources/static/editor_zrpc_code_gen.png)
 
+## zRPC 代码生成说明
+`ZRPC Code Generation` 和 `ZRPC Quick Code Generation` 的区别是：
+- `ZRPC Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+    ```shell
+    $ goctl rpc protoc ${proto 文件路径} --style=gozero --home="~/.goctl" --go_out=${API 文件所在文件夹} --grpc-go_out=${API 文件所在文件夹} --zrpc_out=${API 文件所在文件夹}
+    ```
+- `ZRPC Quick Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home`,`proto_path`(如果有 import 其他 proto 文件) 等信息
+  - 无 import 情况
+    ![preview](./src/main/resources/static/api_code_gen_dialog.png)
+  - 有 import 情况，proto_path 目前只支持但文件选择，因此 **不支持 import 自不同文件夹的 proto**。
+    ![preview](./src/main/resources/static/rpc_code_gen_dialog.png)
 
+# Model 代码生成
+## 1. sql 文件右键生成
+![preview](./src/main/resources/static/project_model_code_gen.png)
+
+## 2. sql 文件编辑区右键生成
+![preview](./src/main/resources/static/editor_model_code_gen.png)
+
+## Model 代码生成说明
+**Model 代码生成默认都是带缓存的。**
+
+`Model Code Generation` 和 `Model Quick Code Generation` 的区别是：
+- `Model Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+    ```shell
+    $ goctl model mysql ddl --src=${sql 文件路径} --dir=${sql 文件所在文件夹} --style=gozero -c --home="~/.goctl"
+    ```
+- `Model Quick Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home`，`--cache` 等信息
+  ![preview](./src/main/resources/static/api_code_gen_dialog.png)
+- 
 # 错误提示
 ![context menu](./src/main/resources/static/alert.png)
 
@@ -78,10 +120,7 @@ func main(){
 ![context menu](./src/main/resources/static/go_live_template.png)
 
 下面就进入今天api语法中的模板使用说明吧，我们先来看看service模板的效果
-![context menu](./src/main/resources/static/live_template.gif)
-
-首先上一张图了解一下api文件中几个模板生效区域（psiTree元素区域）
-![context menu](./src/main/resources/static/psiTree.png)
+![context menu](./src/main/resources/static/live_preview.gif)
 
 #### 预设模板及生效区域
 |  模板关键字   | psiTree生效区域 |描述 
@@ -105,22 +144,3 @@ func main(){
 | xml  | Tag|Tag literal |tag模板|
 | path  | Tag|Tag literal |tag模板|
 | form  | Tag|Tag literal |tag模板|
-
-关于每个模板对应内容可在`Goland(mac Os)->Preference->Editor->Live Templates-> Api|Api Tags`中查看详细模板内容，如json tag模板内容为
-```golang
-json:"$FIELD_NAME$"
-```
-![context menu](./src/main/resources/static/json_tag.png)
-
-> 注意： 关键字区分大小写
-
-
-
-# 注意事项
-目前api文件中，仅type block支持单行注释，但目前idea并没有对其他block单行注释进行报错，这个是需要后期完善的功能。后续陆续将api文件中都支持单行注释。
-
-# 待完善功能
-* 语法、语义检测优化
-* 完善高亮优化
-* 完善智能提示
-* Find Usages

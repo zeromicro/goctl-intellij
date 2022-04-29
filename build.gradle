@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'cn.xiaoheiban'
-version '1.0.0'
+version '1.1.0'
 
 repositories {
     mavenCentral()
@@ -35,24 +35,14 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
-    <h1># 2022-01-20(1.0.0)</h1>
+    <h1># 2022-04-29(1.1.0)</h1>
     <ul>
-        <li>Add completion keys</li>
-        <li>Support to go to declaration cross files</li>
-    </ul>
-    <h1># 2021-11-25(v0.7.18)</h1>
-    <ul>
-        <li>Fix duplicate routes error if there declared 'prefix' </li>
-    </ul>
-    
-    <h1># 2021-10-22(v0.7.17)</h1>
-    <ul>
-        <li>Syntax support root path</li>
-    </ul>
-    
-    <h1># 2021-10-05(v0.7.16)</h1>
-    <ul>
-        <li>Fixed goctl not found</li>
+        <li> rpc code generation support `goctl rpc protoc`</li>
+        <li> New support for popups with `style`, `output`, `proto_path`, `goctl home`, etc.</li>
+        <li> Support for quick code generation</li>
+        <li> New support for `timeout` syntax</li>
+        <li> Add support for Java style documentation comments</li>
+        <li> Fix some syntax errors</li>
     </ul>
     """
 }
