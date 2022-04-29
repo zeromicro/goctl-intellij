@@ -28,6 +28,8 @@ public class ApiSyntaxHighlighter extends SyntaxHighlighterBase {
             createTextAttributesKey("API_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey COMMENT =
             createTextAttributesKey("API_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey BLOCK_COMMENT =
+            createTextAttributesKey("API_BLOCK_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey BAD_CHARACTER =
             createTextAttributesKey("API_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
@@ -36,7 +38,7 @@ public class ApiSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] ATTR_KEYWORD = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] ATTR_IDENTIFIER = new TextAttributesKey[]{IDENTIFIER};
     private static final TextAttributesKey[] ATTR_STRING = new TextAttributesKey[]{STRING};
-    private static final TextAttributesKey[] ATTR_COMMENT = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] ATTR_COMMENT = new TextAttributesKey[]{COMMENT,BLOCK_COMMENT};
     private static final TextAttributesKey[] ATTR_BAD_CHARACTER = new TextAttributesKey[]{BAD_CHARACTER};
 
 
@@ -78,6 +80,7 @@ public class ApiSyntaxHighlighter extends SyntaxHighlighterBase {
                     attrs = ATTR_STRING;
                     break;
                 case ApiLexer.COMMENT:
+                case ApiLexer.DOC_COMMENT:
                     attrs = ATTR_COMMENT;
                     break;
                 case ApiLexer.COLON:

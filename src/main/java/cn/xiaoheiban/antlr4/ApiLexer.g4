@@ -88,6 +88,7 @@ RAW_STRING: RAW_STRING_F ~('`'|'\r'|'\n')* RAW_STRING_F;
 
 // COMMENT
 COMMENT:    COMMENT_FLAG ~('\n')*  -> channel(HIDDEN);
+DOC_COMMENT:            '/*' .*? '*/' -> channel(HIDDEN);
 
 fragment COMMENT_FLAG:   '//';
 

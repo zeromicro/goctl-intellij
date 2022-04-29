@@ -52,7 +52,7 @@ public class ApiParserDefinition implements ParserDefinition {
     public static TokenIElementType RBRACK = tokenIElementTypes.get(ApiLexer.RBRACK);
     public static TokenIElementType IDENTIFIER = tokenIElementTypes.get(IDENT);
 
-    public static final TokenSet COMMENTS = ELEMENT_FACTORY.createTokenSet(ApiLexer.COMMENT);
+    public static final TokenSet COMMENTS = ELEMENT_FACTORY.createTokenSet(ApiLexer.COMMENT, DOC_COMMENT);
     public static final TokenSet WHITESPACE = ELEMENT_FACTORY.createTokenSet(ApiLexer.WS);
     public static final TokenSet STRING = ELEMENT_FACTORY.createTokenSet(ApiLexer.VALUE, ApiLexer.RAW_STRING);
 
