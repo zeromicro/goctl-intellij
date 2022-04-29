@@ -7,6 +7,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.execution.util.ExecUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 
 import java.io.File;
@@ -14,20 +15,58 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Exec {
+    private static final String BASH = "bash";
+    private static final String SH = "sh";
+    private static final String FISH = "fish";
+    private static final String ZSH = "zsh";
+    private static final String DEFAULT_SHELL = SH;
+    private static final String COLON_SEPARATOR = ":";
+    private static final String SPACE_SEPARATOR = " ";
+    private static final String COMMA_SEPARATOR = ";";
+    private static final String DEFAULT_SEPARATOR = COLON_SEPARATOR;
+
+    private static String getCurrenShell() {
+        ExecResult ret = run(null, "echo $SHELL");
+        if (ret.exitCode == 0) {
+            if (StringUtil.isEmptyOrSpaces(ret.stdout)) {
+                return DEFAULT_SHELL;
+            }
+            List<String> strings = FileUtil.splitPath(ret.stdout);
+            if (strings.isEmpty()) {
+                return DEFAULT_SHELL;
+            }
+            return strings.get(strings.size() - 1);
+        }
+        return DEFAULT_SHELL;
+    }
 
     public static String lookPath(Project project, String s) {
         String os = System.getProperty("os.name");
         os = os.toLowerCase();
-        String pathSeparator = File.pathSeparator;
+        String pathSeparator = DEFAULT_SEPARATOR;
         String pathCmd = "";
         if (os.startsWith("mac") || os.startsWith("linux")) {
+            String currentShell = getCurrenShell();
+            if (project != null) {
+                Notification.getInstance().log(project, "Use shell: " + currentShell);
+            }
+            switch (currentShell) {
+                case SH:
+                case BASH:
+                case ZSH:
+                    pathSeparator = COLON_SEPARATOR;
+                case FISH:// Fix issue #13
+                    pathSeparator = SPACE_SEPARATOR;
+                default:
+                    pathSeparator = COLON_SEPARATOR;
+            }
             pathCmd = "echo $PATH";
         } else if (os.startsWith("windows")) {
             pathCmd = "echo %Path%";
             if (!s.endsWith(".exe")) {
                 s = s.concat(".exe");
             }
-            pathSeparator = ";";
+            pathSeparator = COMMA_SEPARATOR;
         } else {
             Notification.getInstance().error(project, "unsupported os: " + os);
             return null;
@@ -85,7 +124,9 @@ public class Exec {
         } else if (os.startsWith("windows")) {
             return Arrays.asList(Constant.CMD, "/c", arg);
         } else {
-            Notification.getInstance().error(project, "unsupport os: " + os);
+            if (project != null) {
+                Notification.getInstance().error(project, "unsupport os: " + os);
+            }
             return null;
         }
     }
@@ -130,7 +171,7 @@ public class Exec {
             }
             GeneralCommandLine commandLine = new GeneralCommandLine(cmd);
             ProcessOutput processOutput = ExecUtil.execAndGetOutput(commandLine);
-            result.setStdout( processOutput.getStdout());
+            result.setStdout(processOutput.getStdout());
             result.setStderr(processOutput.getStderr());
             result.setExitCode(processOutput.getExitCode());
             return result;
@@ -169,7 +210,7 @@ public class Exec {
         Notification.getInstance().log(project, "$ goctl " + arg);
         String stdout = result.getStdout();
         String stderr = result.getStderr();
-        Notification.getInstance().log(project,"Exit code "+result.exitCode);
+        Notification.getInstance().log(project, "Exit code " + result.exitCode);
         if (result.exitCode == 0) {
             if (!StringUtil.isEmptyOrSpaces(stdout)) {
                 if (stdout.startsWith(Constant.PREFIX_SUCCESS)) {
