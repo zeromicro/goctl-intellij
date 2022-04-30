@@ -146,5 +146,3 @@ Let's get into the template usage instructions in today's api syntax, and let's 
 | form | Tag|Tag literal |tag template|
 
 About each template corresponding content can be seen in `Goland(mac Os)->Preference->Editor->Live Templates-> Api|Api Tags` in the detailed template content, such as json tag template content for
-
-Translated with www.DeepL.com/Translator (free version)
