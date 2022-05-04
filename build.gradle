@@ -35,14 +35,8 @@ intellij {
 patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
-    <h1># 2022-04-29(1.1.0)</h1>
     <ul>
-        <li> rpc code generation support `goctl rpc protoc`</li>
-        <li> New support for popups with `style`, `output`, `proto_path`, `goctl home`, etc.</li>
-        <li> Support for quick code generation</li>
-        <li> New support for `timeout` syntax</li>
-        <li> Add support for Java style documentation comments</li>
-        <li> Fix some syntax errors</li>
+        <li> Fix zRPC code generation error on Windows</li>
     </ul>
     """
 }
