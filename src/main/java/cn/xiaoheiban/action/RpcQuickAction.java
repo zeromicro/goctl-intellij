@@ -81,7 +81,8 @@ public class RpcQuickAction extends AnAction {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "generating rpc ...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                String protoDir = FileUtil.getDirectoryname(src);
+                File srcFile = new File(src);
+                String protoDir = srcFile.getParent();
                 String command = "rpc protoc -I " + protoDir;
                 if (!StringUtil.isEmptyOrSpaces(protoPath) && !protoPath.equals(protoDir)) {
                     command += " -I " + protoPath;
