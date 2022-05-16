@@ -52,7 +52,8 @@ RUNE:       'rune';
 TIME:       'time.Time';
 
 // HTTP PATH
-PATH:       (('/'|'/:'|'-') IDENT)+ | SLASH;
+PATH:       (('/'|'/:'|'-') IDENT)+ | P | SLASH;
+fragment P:          (IDENT ('/'|'/:'|'-'))+ IDENT;
 DURATION:   NUMBER ('ns'|'us'|'µs'|'ms'|'s'|'m'|'h');
 
 // MAKER
