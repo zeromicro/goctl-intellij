@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class ApiCreateFileAction extends CreateFileFromTemplateAction implements DumbAware {
     public static final String FILE_TEMPLATE = "Api File";
     public static final String APPLICATION_TEMPLATE = "Api Template";
-    private static final String NEW_API_FILE = "New Api File";
+    private static final String NEW_API_FILE = "New API File";
 
     private static final String DEFAULT_API_TEMPLATE_PROPERTY = "DefaultApiTemplateProperty";
 

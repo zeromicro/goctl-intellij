@@ -63,14 +63,14 @@
     </extensions>
 
     <actions>
-        <action id="Api.NewApiFile" class="cn.xiaoheiban.action.ApiCreateFileAction"
-                text="API File" description="Create new Api file">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        <action id="Api.NewProtoFile" class="cn.xiaoheiban.action.ProtoCreateFileAction"
+                text="Proto File" description="Create new Proto file" icon="AllIcons.Actions.PrettyPrint">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
         </action>
 
-        <action id="Api.NewProtoFile" class="cn.xiaoheiban.action.ProtoCreateFileAction"
-                text="Proto File" description="Create new Proto file">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        <action id="Api.NewApiFile" class="cn.xiaoheiban.action.ApiCreateFileAction"
+                text="API File" description="Create new Api file">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
         </action>
 
         <group id="GoZeroEditorGroup" text="Go Zero" popup="true">
@@ -92,8 +92,8 @@
                     description="Generate model code"/>
         </group>
 
-        <group id="GoZeroProjectNewGroup" text="Go Zero" popup="true">
-            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
+        <group id="GoZeroProjectNewGroup" text="Go Zero" popup="true" icon="AllIcons.Actions.ProjectDirectory">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
             <action class="cn.xiaoheiban.action.ApiNewAction" id="ProjectApiNewAction" text="API Greet Service"
                     description="Generate Api greet service"/>
             <action class="cn.xiaoheiban.action.RpcNewAction" id="ProjectRpcNewAction" text="ZRPC Greet Service"
