@@ -1,5 +1,6 @@
 package cn.xiaoheiban.ui;
 
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
@@ -69,8 +70,14 @@ public class FileChooseDialog extends DialogWrapper {
         final JLabel styleLabel = new JLabel();
         styleLabel.setText("Style");
         stylePanel.add(styleLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, labelDimension, null, 0, false));
+
+        // 获取上次录入的style
+        String styleText = PropertiesComponent.getInstance().getValue("cn.xiaoheiban.go-zero" + "_style");
+        if ("".equals(styleText) || styleText==null) {
+            styleText = "gozero";
+        }
         gozeroTextField = new JTextField();
-        gozeroTextField.setText("gozero");
+        gozeroTextField.setText(styleText);
         stylePanel.add(gozeroTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, textFieldDimension, null, 0, false));
 
         final JPanel templatePanel = new JPanel();
@@ -129,7 +136,10 @@ public class FileChooseDialog extends DialogWrapper {
         String goctlHome = templateBrowseButton.getText();
         String outputBrowserPath = textFieldWithBrowseButton.getText();
 
+        // 这里记录历史值
         String style = gozeroTextField.getText();
+        PropertiesComponent.getInstance().setValue("cn.xiaoheiban.go-zero" + "_style", style);
+
 
         String output = "", protoPath = "";
         VirtualFile outputFile = LocalFileSystem.getInstance().findFileByPath(outputBrowserPath);
