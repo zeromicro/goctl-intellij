@@ -31,6 +31,7 @@ public class FileChooseDialog extends DialogWrapper {
     private TextFieldWithBrowseButton protoPathBrowseButton;
     private TextFieldWithBrowseButton templateBrowseButton;
     private JTextField gozeroTextField;
+    private final String stylePropertyKey = "cn.xiaoheiban.go-zero" + "_style";
 
     public FileChooseDialog(String title, String cancelText, boolean showProtoPath) {
         super(true);
@@ -71,9 +72,9 @@ public class FileChooseDialog extends DialogWrapper {
         styleLabel.setText("Style");
         stylePanel.add(styleLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, labelDimension, null, 0, false));
 
-        // 获取上次录入的style
-        String styleText = PropertiesComponent.getInstance().getValue("cn.xiaoheiban.go-zero" + "_style");
-        if ("".equals(styleText) || styleText==null) {
+        // get last style string
+        String styleText = PropertiesComponent.getInstance().getValue(stylePropertyKey);
+        if ("".equals(styleText) || styleText == null) {
             styleText = "gozero";
         }
         gozeroTextField = new JTextField();
@@ -136,9 +137,9 @@ public class FileChooseDialog extends DialogWrapper {
         String goctlHome = templateBrowseButton.getText();
         String outputBrowserPath = textFieldWithBrowseButton.getText();
 
-        // 这里记录历史值
+        // store style string
         String style = gozeroTextField.getText();
-        PropertiesComponent.getInstance().setValue("cn.xiaoheiban.go-zero" + "_style", style);
+        PropertiesComponent.getInstance().setValue(stylePropertyKey, style);
 
 
         String output = "", protoPath = "";
@@ -146,7 +147,7 @@ public class FileChooseDialog extends DialogWrapper {
         if (outputFile != null) {
             output = outputFile.getPath();
         }
-        if (protoPathBrowseButton!=null) {
+        if (protoPathBrowseButton != null) {
             String protoBrowserPath = protoPathBrowseButton.getText();
             VirtualFile protoFile = LocalFileSystem.getInstance().findFileByPath(protoBrowserPath);
             if (protoFile != null) {
