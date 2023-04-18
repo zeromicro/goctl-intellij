@@ -61,11 +61,13 @@
 
 ## Api 代码生成说明
 `API Code Generation` 和 `API Quick Code Generation` 的区别是：
-- `API Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+
+- `API Quick Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+  
     ```shell
     $ goctl api go --api=${API 文件路径} --style=gozero --home="~/.goctl" --dir=${API 文件所在文件夹}
     ```
-- `API Quick Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home` 等信息
+- `API Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home` 等信息
   ![preview](./src/main/resources/static/api_code_gen_dialog.png)
 
 # zRPC 代码生成
