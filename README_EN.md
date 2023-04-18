@@ -61,11 +61,12 @@ In the target folder ` Right click -> New -> Go Zero -> Api Greet Service/Rpc Gr
 
 ## Api code generation instructions
 The difference between `API Code Generation` and `API Quick Code Generation` is that
-- `API Code Generation` in `goctl` uses the specified values for the relevant command parameters, and its code generation instructions read as follows
+- `API Quick Code Generation` in `goctl` uses the specified values for the relevant command parameters, and its code generation instructions read as follows
+    
     ```shell
     $ goctl api go --api=${API file path} --style=gozero --home="~/.goctl" --dir=${API file folder}
     ```
-- `API Quick Code Generation` will open a popup for the user to fill in `--style`, `-- dir`, `--home`, etc.
+- `API Code Generation` will open a popup for the user to fill in `--style`, `-- dir`, `--home`, etc.
   ![preview](./src/main/resources/static/api_code_gen_dialog.png)
 
 # zRPC code generation
@@ -104,7 +105,7 @@ The difference between `Model Code Generation` and `Model Quick Code Generation`
     ```
 - `Model Quick Code Generation` will open a popup for the user to fill in `--style`, `-- dir`, `--home`, `--cache`, etc.
   ![preview](./src/main/resources/static/api_code_gen_dialog.png)
--
+  -
 # Error message
 ![context menu](./src/main/resources/static/alert.png)
 
