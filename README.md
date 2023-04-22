@@ -79,11 +79,13 @@
 
 ## zRPC 代码生成说明
 `ZRPC Code Generation` 和 `ZRPC Quick Code Generation` 的区别是：
-- `ZRPC Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+- `ZRPC Quick Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+    
     ```shell
     $ goctl rpc protoc ${proto 文件路径} --style=gozero --home="~/.goctl" --go_out=${API 文件所在文件夹} --grpc-go_out=${API 文件所在文件夹} --zrpc_out=${API 文件所在文件夹}
     ```
-- `ZRPC Quick Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home`,`proto_path`(如果有 import 其他 proto 文件) 等信息
+- `ZRPC Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home`,`proto_path`(如果有 import 其他 proto 文件) 等信息
+  
   - 无 import 情况
     ![preview](./src/main/resources/static/api_code_gen_dialog.png)
   - 有 import 情况，proto_path 目前只支持但文件选择，因此 **不支持 import 自不同文件夹的 proto**。
@@ -100,11 +102,12 @@
 **Model 代码生成默认都是带缓存的。**
 
 `Model Code Generation` 和 `Model Quick Code Generation` 的区别是：
-- `Model Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+- `Model Quick Code Generation` 中 `goctl` 的相关指令参数均使用指定值，其代码生成指令内容如下：
+    
     ```shell
     $ goctl model mysql ddl --src=${sql 文件路径} --dir=${sql 文件所在文件夹} --style=gozero -c --home="~/.goctl"
     ```
-- `Model Quick Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home`，`--cache` 等信息
+- `Model Code Generation` 会打开弹窗让使用者填写 `--style`，`-- dir`，`--home`，`--cache` 等信息
   ![preview](./src/main/resources/static/api_code_gen_dialog.png)
 - 
 # 错误提示

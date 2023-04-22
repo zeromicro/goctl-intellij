@@ -62,7 +62,7 @@ In the target folder ` Right click -> New -> Go Zero -> Api Greet Service/Rpc Gr
 ## Api code generation instructions
 The difference between `API Code Generation` and `API Quick Code Generation` is that
 - `API Quick Code Generation` in `goctl` uses the specified values for the relevant command parameters, and its code generation instructions read as follows
-    
+  
     ```shell
     $ goctl api go --api=${API file path} --style=gozero --home="~/.goctl" --dir=${API file folder}
     ```
@@ -78,11 +78,13 @@ The difference between `API Code Generation` and `API Quick Code Generation` is 
 
 ## zRPC Code Generation Instructions
 The difference between `ZRPC Code Generation` and `ZRPC Quick Code Generation` is that
-- `ZRPC Code Generation` uses the specified values for the relevant command parameters of `goctl`, and its code generation instructions read as follows
+- `ZRPC Quick Code Generation` uses the specified values for the relevant command parameters of `goctl`, and its code generation instructions read as follows
+    
     ```shell
     $ goctl rpc protoc ${proto file path} --style=gozero --home="~/.goctl" --go_out=${API file folder} --grpc-go_out=${API file folder} --zrpc_out=${API file folder }
     ```
-- `ZRPC Quick Code Generation` will open a popup window for users to fill in `--style`, `-- dir`, `--home`, `proto_path` (if there are other proto files imported), etc.
+- `ZRPC Code Generation` will open a popup window for users to fill in `--style`, `-- dir`, `--home`, `proto_path` (if there are other proto files imported), etc.
+  
   - No import case
     ![preview](./src/main/resources/static/api_code_gen_dialog.png)
   - With import, proto_path currently only supports but file selection, so **importing proto from a different folder is not supported**.
@@ -99,11 +101,12 @@ The difference between `ZRPC Code Generation` and `ZRPC Quick Code Generation` i
 **Model code generation is cached by default. **
 
 The difference between `Model Code Generation` and `Model Quick Code Generation` is that
-- `Model Code Generation` uses the specified values for the `goctl` command parameters, and the code generation commands are as follows
+- `Model Quick Code Generation` uses the specified values for the `goctl` command parameters, and the code generation commands are as follows
+    
     ```shell
     $ goctl model mysql ddl --src=${sql file path} --dir=${sql file folder} --style=gozero -c --home="~/.goctl"
     ```
-- `Model Quick Code Generation` will open a popup for the user to fill in `--style`, `-- dir`, `--home`, `--cache`, etc.
+- `Model Code Generation` will open a popup for the user to fill in `--style`, `-- dir`, `--home`, `--cache`, etc.
   ![preview](./src/main/resources/static/api_code_gen_dialog.png)
   -
 # Error message
