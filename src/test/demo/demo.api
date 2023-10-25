@@ -1,6 +1,7 @@
 syntax = "v1"
 
 import "../base2.api"
+import "../base.api"
 
 info (
 	title:   "type title here"

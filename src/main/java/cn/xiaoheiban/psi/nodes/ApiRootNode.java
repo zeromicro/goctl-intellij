@@ -211,18 +211,11 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
         }
         Project project = element.getProject();
         Set<String> pathSet = getImports(this);
-        VirtualFile[] virtualFiles = ProjectRootManager.getInstance(project).getContentRoots();
-        for (VirtualFile virtualFile : virtualFiles) {
-            PsiDirectory directory = PsiManager.getInstance(project).findDirectory(virtualFile);
-            if (null == directory) {
-                continue;
-            }
-            PsiElement psiElement = resolve(directory, element, pathSet);
-            if (psiElement != null) {
-                return psiElement;
-            }
+        PsiDirectory directory = element.getContainingFile().getContainingDirectory();
+        if (null == directory) {
+            return null;
         }
-        return null;
+        return resolve(directory, element, pathSet);
     }
 
     public static Set<ApiRootNode> getApiRootNode(PsiElement element) {
@@ -288,9 +281,35 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
 
     private PsiElement resolve(PsiDirectory directory, PsiNamedElement element, Set<String> expectedPath) {
         try {
+            if (directory == null) {
+                return null;
+            }
+            Project project = directory.getProject();
+            VirtualFile virtualFile = directory.getVirtualFile();
             String baseDir = directory.getVirtualFile().getPath();
-            PsiFile[] files = directory.getFiles();
-            for (PsiFile file : files) {
+            Set<VirtualFile> relativeFiles = new ArrayListSet<>();
+            Set<PsiFile> psiFiles = new ArrayListSet<>();
+            for (String importPath : expectedPath) {
+                VirtualFile fileByRelativePath = virtualFile.findFileByRelativePath(importPath);
+                if (fileByRelativePath == null) {
+                    continue;
+                }
+                relativeFiles.add(fileByRelativePath);
+            }
+            for (VirtualFile file : relativeFiles) {
+                for (String path : expectedPath) {
+                    File f = new File(baseDir, path);
+                    String absolutePath = f.getCanonicalPath();
+                    if (Objects.equals(file.getCanonicalPath(), absolutePath)) {
+                        PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+                        if (psiFile == null) {
+                            continue;
+                        }
+                        psiFiles.add(psiFile);
+                    }
+                }
+            }
+            for (PsiFile file : psiFiles) {
                 if (!(file.getFileType() instanceof ApiFileType)) {
                     continue;
                 }
@@ -319,19 +338,8 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
                     }
                 }
             }
-            PsiDirectory[] subdirectories = directory.getSubdirectories();
-            if (subdirectories.length == 0) {
-                return null;
-            }
-
-            for (PsiDirectory d : subdirectories) {
-                PsiElement psiElement = resolve(d, element, expectedPath);
-                if (psiElement != null) {
-                    return psiElement;
-                }
-            }
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
