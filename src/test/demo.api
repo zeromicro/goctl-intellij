@@ -1,19 +1,5 @@
 syntax = "v1"
 
-import "example_base1.api"
-
-import (
-	"example_base2.api"
-)
-
-info (
-	title:   "type title here"
-	desc:    "type desc here"
-	author:  "type author here"
-	email:   "type email here"
-	version: "type version here"
-)
-
 type GetFormReq {
 	Name    string   `form:"name"`
 	Age     int      `form:"age"`
@@ -82,7 +68,7 @@ type (
 		Name string `json:"name"`
 	}
 	NestDemoReq1 {
-		Nest *Nest `json:"nest"`
+		Nest *NestDemoReq1 `json:"nest"`
 	}
 	NestDemoResp1 {
 		Nest []*Nest `json:"nest"`
@@ -91,7 +77,7 @@ type (
 		*Nest
 	}
 	NestDemoResp2 {
-*Nest `json:"nest"`
+		*Nest `json:"nest"`
 	}
 )
 

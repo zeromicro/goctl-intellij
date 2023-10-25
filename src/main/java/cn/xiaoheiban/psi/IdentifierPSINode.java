@@ -49,6 +49,7 @@ public class IdentifierPSINode extends AntlrPsiLeafNode implements PsiNamedEleme
             switch (((RuleIElementType) elType).getRuleIndex()) {
                 // 允许跳转到struct reference的规则
                 case ApiParser.RULE_referenceId:
+                case ApiParser.RULE_body:
                     StructReference reference = new StructReference(this);
                     return reference;
 

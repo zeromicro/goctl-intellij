@@ -45,6 +45,7 @@ public class ApiParserDefinition implements ParserDefinition {
     private static final List<RuleIElementType> RULE_TYPES = ELEMENT_FACTORY.getRuleIElementTypes();
     private final Map<Integer, Function<ASTNode, PsiElement>> elementFactories = new HashMap<>();
     public static TokenIElementType LPAREN = tokenIElementTypes.get(ApiLexer.LPAREN);
+    public static TokenIElementType GOTYPE = tokenIElementTypes.get(ApiLexer.GOTYPE);
     public static TokenIElementType RPAREN = tokenIElementTypes.get(ApiLexer.RPAREN);
     public static TokenIElementType LBRACE = tokenIElementTypes.get(ApiLexer.LBRACE);
     public static TokenIElementType RBRACE = tokenIElementTypes.get(ApiLexer.RBRACE);
@@ -68,6 +69,7 @@ public class ApiParserDefinition implements ParserDefinition {
         register(ApiParser.RULE_anonymousField, AnonymousField::new);
         register(ApiParser.RULE_normalField, NormalField::new);
         register(ApiParser.RULE_referenceId, ReferenceIdNode::new);
+        register(ApiParser.RULE_body, BodyNode::new);
         register(ApiParser.RULE_serviceSpec, ServiceNode::new);
         register(ApiParser.RULE_serviceRoute, ServiceRouteNode::new);
         register(ApiParser.RULE_httpRoute, HttpRouteNode::new);

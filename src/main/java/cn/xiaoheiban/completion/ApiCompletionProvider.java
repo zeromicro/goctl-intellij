@@ -40,7 +40,7 @@ public class ApiCompletionProvider extends ApiProvider {
         }
         IElementType elementType = node.getElementType();
         boolean canAdd = false;
-        if (elementType.equals(ApiParserDefinition.rule(ApiParser.RULE_referenceId))) {
+        if (elementType.equals(ApiParserDefinition.rule(ApiParser.RULE_referenceId)) || elementType.equals(ApiParserDefinition.rule(ApiParser.RULE_body))) {
             canAdd = true;
         } else {
             ASTNode treeParent = node.getTreeParent();
@@ -48,6 +48,7 @@ public class ApiCompletionProvider extends ApiProvider {
                 IElementType elementType1 = treeParent.getElementType();
                 if (elementType1.equals(ApiParserDefinition.rule(ApiParser.RULE_normalFieldType))
                         || elementType1.equals(ApiParserDefinition.rule(ApiParser.RULE_serviceRoute))
+                        || elementType1.equals(ApiParserDefinition.rule(ApiParser.RULE_body))
                         || elementType1.equals(ApiParserDefinition.rule(ApiParser.RULE_referenceId))) {
                     canAdd = true;
                 }
