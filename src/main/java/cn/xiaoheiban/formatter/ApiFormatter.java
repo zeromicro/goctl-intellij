@@ -57,6 +57,7 @@ public class ApiFormatter implements FormattingModelBuilder {
     private static final IElementType ROUTE = ApiParserDefinition.rule(ApiParser.RULE_httpRoute);
     private static final IElementType RETURNS = ApiParserDefinition.token(ApiParser.RETURNS);
     private static final IElementType REFERENCE_ID = ApiParserDefinition.rule(ApiParser.RULE_referenceId);
+    private static final IElementType BODY = ApiParserDefinition.rule(ApiParser.RULE_body);
     private static final IElementType PAIR = ApiParserDefinition.rule(ApiParser.RULE_pair);
     private static final IElementType HANDLER_PAIR = ApiParserDefinition.rule(ApiParser.RULE_handlerPair);
     private static final IElementType HANDLER_NEW = ApiParserDefinition.rule(ApiParser.RULE_serviceHandlerNew);
@@ -93,6 +94,7 @@ public class ApiFormatter implements FormattingModelBuilder {
         builder.between(DOC, DOC_VALUE).spaceIf(true);
         builder.between(LPAREN, RPAREN).none();
         builder.around(REFERENCE_ID).none();
+        builder.around(BODY).none();
         builder.between(INFO, LPAREN).none();
         builder.between(DOC, LPAREN).none();
         builder.between(SERVER, LPAREN).none();

@@ -1,5 +1,6 @@
 package cn.xiaoheiban.language;
 
+import cn.xiaoheiban.antlr4.ApiLexer;
 import cn.xiaoheiban.antlr4.ApiParser;
 import cn.xiaoheiban.highlighting.ApiSyntaxHighlighter;
 import cn.xiaoheiban.parser.ApiParserDefinition;
@@ -9,6 +10,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import org.antlr.jetbrains.adapter.psi.ScopeNode;
 import org.jetbrains.annotations.NotNull;
@@ -76,6 +78,45 @@ public class ApiAnnotator implements Annotator {
                 allNode = root.getAllNode();
             }
             String name = ((ReferenceIdNode) element).getName();
+            if (ApiRootNode.resolve(allNode, ApiParserDefinition.rule(ApiParser.RULE_structNameId), name)) {
+                holder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);
+                return;
+            }
+
+            Set<ApiRootNode> apiRootNode = ApiRootNode.getApiRootNode(element);
+            for (ApiRootNode node : apiRootNode) {
+                Map<IElementType, List<ASTNode>> allNode = node.getAllNode();
+                if (ApiRootNode.resolve(allNode, ApiParserDefinition.rule(ApiParser.RULE_structNameId), name)) {
+                    holder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);
+                    return;
+                }
+            }
+            holder.createErrorAnnotation(element, "can not resolve " + name);
+        } else if (element instanceof BodyNode) {//RULE_body
+            if (element.getText().contains(".")) {
+                return;
+            }
+
+
+            if (allNode == null) {
+                ApiRootNode root = ApiFile.getRoot(element);
+                if (root == null) {
+                    return;
+                }
+                allNode = root.getAllNode();
+            }
+            PsiElement lastChild = element.getLastChild();
+            if (lastChild == null) {
+                return;
+            }
+
+            if (lastChild instanceof LeafPsiElement) {
+                LeafPsiElement leafPsiElement = (LeafPsiElement) lastChild;
+                if (leafPsiElement.getElementType().equals(ApiParserDefinition.GOTYPE)) {
+                    return;
+                }
+            }
+            String name = lastChild.getText();
             if (ApiRootNode.resolve(allNode, ApiParserDefinition.rule(ApiParser.RULE_structNameId), name)) {
                 holder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);
                 return;
