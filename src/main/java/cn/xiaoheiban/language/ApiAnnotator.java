@@ -77,6 +77,7 @@ public class ApiAnnotator implements Annotator {
                 }
                 allNode = root.getAllNode();
             }
+
             String name = ((ReferenceIdNode) element).getName();
             if (ApiRootNode.resolve(allNode, ApiParserDefinition.rule(ApiParser.RULE_structNameId), name)) {
                 holder.createInfoAnnotation(element, element.getText()).setTextAttributes(ApiSyntaxHighlighter.IDENTIFIER);

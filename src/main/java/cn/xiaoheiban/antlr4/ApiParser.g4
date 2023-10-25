@@ -43,7 +43,7 @@ typeAlias:TYPE structNameId '='? normalFieldType;
 typeFiled:anonymousField|normalField |structType;
 normalField:fieldName fieldType  tag?;
 fieldType:normalFieldType|starFieldType|mapFieldType|arrayOrSliceType;
-anonymousField: STAR? referenceId tag?;
+anonymousField: STAR? referenceId;
 normalFieldType: GOTYPE|referenceId|(INTERFACE LBRACE RBRACE);
 starFieldType: STAR normalFieldType;
 mapFieldType: MAP LBRACK fieldType RBRACK fieldType;

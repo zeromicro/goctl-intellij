@@ -7,8 +7,6 @@ import cn.xiaoheiban.psi.ApiFile;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
@@ -19,7 +17,10 @@ import org.apache.commons.collections.map.HashedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class ApiRootNode extends IPsiNode implements ScopeNode {
 
@@ -32,7 +33,17 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
         elementTypeSet.add(ApiParserDefinition.rule(ApiParser.RULE_handlerValue));
         elementTypeSet.add(ApiParserDefinition.rule(ApiParser.RULE_structNameId));
         elementTypeSet.add(ApiParserDefinition.rule(ApiParser.RULE_httpRoute));
-        return ApiFile.findChildren(this, elementTypeSet);
+        Map<IElementType, List<ASTNode>> children = ApiFile.findChildren(this, elementTypeSet);
+        Set<PsiElement> importedPsiElements = getImportedPsiElements(this);
+        for (PsiElement psi : importedPsiElements) {
+            Map<IElementType, List<ASTNode>> list = ApiFile.findChildren(psi, elementTypeSet);
+            list.forEach((iElementType, astNodes) -> {
+                List<ASTNode> gotList = children.get(iElementType);
+                gotList.addAll(astNodes);
+                children.put(iElementType, gotList);
+            });
+        }
+        return children;
     }
 
     public static boolean resolve(Map<IElementType, List<ASTNode>> children, IElementType elementType, String name) {
@@ -78,6 +89,76 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
             }
         });
         return ret;
+    }
+
+    public static Set<PsiElement> getPsiElementsByDir(PsiDirectory directory, Set<String> expectedPath) {
+        Set<PsiElement> importedPsiElements = new ArrayListSet<>();
+        if (null == directory) {
+            return importedPsiElements;
+        }
+        Project project = directory.getProject();
+        VirtualFile virtualFile = directory.getVirtualFile();
+        try {
+            String baseDir = directory.getVirtualFile().getPath();
+            Set<VirtualFile> relativeFiles = new ArrayListSet<>();
+            Set<PsiFile> psiFiles = new ArrayListSet<>();
+            for (String importPath : expectedPath) {
+                VirtualFile fileByRelativePath = virtualFile.findFileByRelativePath(importPath);
+                if (fileByRelativePath == null) {
+                    continue;
+                }
+                relativeFiles.add(fileByRelativePath);
+            }
+            for (VirtualFile file : relativeFiles) {
+                for (String path : expectedPath) {
+                    File f = new File(baseDir, path);
+                    String absolutePath = f.getCanonicalPath();
+                    if (Objects.equals(file.getCanonicalPath(), absolutePath)) {
+                        PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+                        if (psiFile == null) {
+                            continue;
+                        }
+                        psiFiles.add(psiFile);
+                    }
+                }
+            }
+
+            for (PsiFile file : psiFiles) {
+                if (!(file.getFileType() instanceof ApiFileType)) {
+                    continue;
+                }
+                PsiElement[] children = file.getChildren();
+                for (PsiElement psi : children) {
+                    if (!(psi instanceof ApiRootNode)) {
+                        continue;
+                    }
+                    ApiRootNode apiRootNode = (ApiRootNode) (psi);
+                    String filePath = apiRootNode.getContainingFile().getVirtualFile().getPath();
+                    for (String path : expectedPath) {
+                        File f = new File(baseDir, path);
+                        String absolutePath = f.getCanonicalPath();
+                        if (filePath.equals(absolutePath)) {
+                            importedPsiElements.add(psi);
+                        }
+                    }
+                }
+            }
+            PsiDirectory[] subdirectories = directory.getSubdirectories();
+            for (PsiDirectory d : subdirectories) {
+                importedPsiElements.addAll(getPsiElementsByDir(d, expectedPath));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return importedPsiElements;
+    }
+
+    public static Set<PsiElement> getImportedPsiElements(PsiElement element) {
+        Set<PsiElement> importedPsiElements = new ArrayListSet<>();
+        Set<String> expectedPath = getImports(element);
+        PsiDirectory directory = element.getContainingFile().getContainingDirectory();
+        importedPsiElements.addAll(getPsiElementsByDir(directory, expectedPath));
+        return importedPsiElements;
     }
 
     public static Set<String> getImports(PsiElement element) {
@@ -146,7 +227,7 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
 
     public static Set<ApiRootNode> getApiRootNode(PsiElement element) {
         ApiRootNode root = ApiFile.getRoot(element);
-        if (root==null){
+        if (root == null) {
             return new ArrayListSet<>();
         }
         Project project = element.getProject();
@@ -158,7 +239,7 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
             if (null == directory) {
                 continue;
             }
-            List<ApiRootNode> apiRootNode = getApiRootNode(directory,pathSet);
+            List<ApiRootNode> apiRootNode = getApiRootNode(directory, pathSet);
             for (ApiRootNode node : apiRootNode) {
                 set.add(node);
             }
@@ -166,7 +247,7 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
         return set;
     }
 
-    private static List<ApiRootNode> getApiRootNode(PsiDirectory directory,Set<String> pathSet) {
+    private static List<ApiRootNode> getApiRootNode(PsiDirectory directory, Set<String> pathSet) {
         List<ApiRootNode> list = new ArrayList<>();
         PsiFile[] files = directory.getFiles();
         for (PsiFile file : files) {
@@ -187,7 +268,7 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
                         break;
                     }
                 }
-                if (!contains){
+                if (!contains) {
                     continue;
                 }
                 list.add(apiRootNode);
@@ -199,51 +280,58 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
         }
 
         for (PsiDirectory d : subdirectories) {
-            List<ApiRootNode> apiRootNode = getApiRootNode(d,pathSet);
+            List<ApiRootNode> apiRootNode = getApiRootNode(d, pathSet);
             list.addAll(apiRootNode);
         }
         return list;
     }
 
     private PsiElement resolve(PsiDirectory directory, PsiNamedElement element, Set<String> expectedPath) {
-        PsiFile[] files = directory.getFiles();
-        for (PsiFile file : files) {
-            if (!(file.getFileType() instanceof ApiFileType)) {
-                continue;
-            }
-            PsiElement[] children = file.getChildren();
-            for (PsiElement psi : children) {
-                if (!(psi instanceof ApiRootNode)) {
+        try {
+            String baseDir = directory.getVirtualFile().getPath();
+            PsiFile[] files = directory.getFiles();
+            for (PsiFile file : files) {
+                if (!(file.getFileType() instanceof ApiFileType)) {
                     continue;
                 }
-                ApiRootNode apiRootNode = (ApiRootNode) (psi);
-                String filePath = apiRootNode.getContainingFile().getVirtualFile().getPath();
-                boolean contains = false;
-                for (String path : expectedPath) {
-                    if (filePath.endsWith(path)) {
-                        contains = true;
-                        break;
+                PsiElement[] children = file.getChildren();
+                for (PsiElement psi : children) {
+                    if (!(psi instanceof ApiRootNode)) {
+                        continue;
+                    }
+                    ApiRootNode apiRootNode = (ApiRootNode) (psi);
+                    String filePath = apiRootNode.getContainingFile().getVirtualFile().getPath();
+                    boolean contains = false;
+                    for (String path : expectedPath) {
+                        File f = new File(baseDir, path);
+                        String absolutePath = f.getCanonicalPath();
+                        if (filePath.equals(absolutePath)) {
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (!contains) {
+                        continue;
+                    }
+                    PsiElement resolve = resolve(apiRootNode, element, "");
+                    if (resolve != null) {
+                        return resolve;
                     }
                 }
-                if (!contains) {
-                    continue;
-                }
-                PsiElement resolve = resolve(apiRootNode, element, "");
-                if (resolve != null) {
-                    return resolve;
-                }
             }
-        }
-        PsiDirectory[] subdirectories = directory.getSubdirectories();
-        if (subdirectories.length == 0) {
-            return null;
-        }
+            PsiDirectory[] subdirectories = directory.getSubdirectories();
+            if (subdirectories.length == 0) {
+                return null;
+            }
 
-        for (PsiDirectory d : subdirectories) {
-            PsiElement psiElement = resolve(d,element,expectedPath);
-            if (psiElement != null) {
-                return psiElement;
+            for (PsiDirectory d : subdirectories) {
+                PsiElement psiElement = resolve(d, element, expectedPath);
+                if (psiElement != null) {
+                    return psiElement;
+                }
             }
+        } catch (IOException ignored) {
+
         }
         return null;
     }
