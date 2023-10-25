@@ -14,3 +14,6 @@ gradle-app.setting
 classes/
 out/
 .DS_Store
+# g4 generted useless files
+*.interp
+*.tokens

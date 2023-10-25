@@ -1,3 +1,4 @@
+// Generated from /Users/sh00414ml/java_workspace/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiParser.g4 by ANTLR 4.13.1
 package cn.xiaoheiban.antlr4;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -9,6 +10,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
+@SuppressWarnings("CheckReturnValue")
 public class ApiParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements ApiParserVisitor<T> {
 	/**
 	 * {@inheritDoc}
