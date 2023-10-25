@@ -185,6 +185,12 @@ public interface ApiParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTag(ApiParser.TagContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ApiParser#body}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBody(ApiParser.BodyContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ApiParser#serviceStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
