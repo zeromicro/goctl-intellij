@@ -36,7 +36,10 @@ patchPluginXml {
     sinceBuild '193.0'
     changeNotes """
     <ul>
-        <li> Fix syntax error for service name</li>
+       <li>Fix the problem that the import path cannot be highlighted and jumps when it is a relative path</li>
+       <li>Fix the problem that cannot be parsed when the response body is an array</li>
+       <li>Fix the problem that cannot be parsed when the type structure is an array</li>
+       <li>Fix the problem that the maxBytes key-value pair in atserver cannot be parsed</li>
     </ul>
     """
 }
