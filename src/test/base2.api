@@ -1,9 +1,0 @@
-syntax = "v1"
-
-type request2 {
-    // TODO: add members here and delete this comment
-}
-
-type response2 {
-    // TODO: add members here and delete this comment
-}
