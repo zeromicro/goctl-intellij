@@ -51,10 +51,10 @@ arrayOrSliceType: (LBRACK NUMBER? RBRACK)+ fieldType;
 structType: structNameId STRUCT? LBRACE (typeFiled)* RBRACE;
 structNameId:IDENT;
 fieldName:IDENT;
-referenceId:pkg? (LBRACK RBRACK)? STAR? (IDENT|GOTYPE);
+referenceId:pkg? IDENT;
 pkg: IDENT DOT;
 tag: RAW_STRING;
-
+body: (LBRACK RBRACK)? STAR? (IDENT|GOTYPE);
 // service
 serviceStatement: (serviceServerSpec? serviceSpec);
 serviceServerSpec: ATSERVER LPAREN identPair RPAREN;
@@ -67,7 +67,7 @@ serviceDoc: ATDOC LPAREN pair RPAREN;
 serviceDocNew: ATDOC (docValue|(LPAREN docValue RPAREN));
 serviceHandler: ATSERVER LPAREN handlerPair RPAREN;
 serviceHandlerNew: ATHANDLER handlerValue;
-serviceRoute:httpRoute (LPAREN referenceId? RPAREN)? (RETURNS LPAREN referenceId? RPAREN)? SMICOLON?;
+serviceRoute:httpRoute (LPAREN body? RPAREN)? (RETURNS LPAREN body? RPAREN)? SMICOLON?;
 httpRoute:HTTPMETHOD PATH;
 identPair:(key COLON (DURATION|identValue|PATH|NUMBER))*;
 handlerPair:(key COLON handlerValue)+;
