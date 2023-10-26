@@ -1,4 +1,3 @@
-// Generated from /Users/sh00414ml/java_workspace/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiParser.g4 by ANTLR 4.13.1
 package cn.xiaoheiban.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
