@@ -37,14 +37,11 @@ public class ApiFile extends PsiFileBase {
     }
 
     public static Map<IElementType, List<ASTNode>> findChildren(PsiElement element, Set<IElementType> elementType) {
+        Map<IElementType, List<ASTNode>> ret = new HashedMap();
         if (element == null) {
-            return null;
+            return ret;
         }
         PsiElement[] children = element.getChildren();
-        if (children == null) {
-            return null;
-        }
-        Map<IElementType, List<ASTNode>> ret = new HashedMap();
         for (PsiElement el : children) {
             ASTNode node = el.getNode();
             if (node == null) {
