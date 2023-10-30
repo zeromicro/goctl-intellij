@@ -37,6 +37,7 @@ patchPluginXml {
     changeNotes """
     <ul>
        <li>fix null pointer exception</li>
+       <li>remember api style config in memory</li>
     </ul>
     """
 }
