@@ -39,8 +39,10 @@ public class ApiRootNode extends IPsiNode implements ScopeNode {
             Map<IElementType, List<ASTNode>> list = ApiFile.findChildren(psi, elementTypeSet);
             list.forEach((iElementType, astNodes) -> {
                 List<ASTNode> gotList = children.get(iElementType);
-                gotList.addAll(astNodes);
-                children.put(iElementType, gotList);
+                if (gotList != null) {
+                    gotList.addAll(astNodes);
+                    children.put(iElementType, gotList);
+                }
             });
         }
         return children;
