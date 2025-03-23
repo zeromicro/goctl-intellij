@@ -1,14 +1,21 @@
 plugins {
     id 'antlr'
     id 'java'
-    id 'org.jetbrains.intellij' version '0.6.5'
+    id 'org.jetbrains.intellij.platform' version '2.3.0'
 }
 
 group 'cn.xiaoheiban'
 version "$intellijVersion"
 
 repositories {
-    mavenCentral()
+    maven { url 'https://maven.aliyun.com/repository/central/'}
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    maven { url 'https://maven.aliyun.com/repository/google/' }
+    maven { url 'https://maven.aliyun.com/repository/jcenter/'}
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin'}
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 compileJava {
@@ -20,21 +27,18 @@ dependencies {
     antlr("org.antlr:antlr4:$antlr4Version") { // use ANTLR version 4
         exclude group: 'com.ibm.icu', module: 'icu4j'
     }
-    compile fileTree(dir:'libs',include:['*.jar'])
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
+    implementation fileTree(dir:'libs',include:['*.jar'])
+    intellijPlatform {
+        intellijIdeaCommunity '2024.3.5'
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
-intellij {
-    version = '2021.3.2'
-    pluginName = 'Goctl'
-    downloadSources true
-    updateSinceUntilBuild false
+        bundledPlugin 'com.intellij.java'
+    }
+//    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 patchPluginXml {
-    sinceBuild '193.0'
-    changeNotes """
+    sinceBuild = '193.0'
+    changeNotes = """
     <ul>
        <li>fix null pointer exception</li>
        <li>remember api style config in memory</li>

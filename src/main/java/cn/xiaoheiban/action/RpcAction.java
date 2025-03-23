@@ -16,7 +16,6 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.twelvemonkeys.io.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
