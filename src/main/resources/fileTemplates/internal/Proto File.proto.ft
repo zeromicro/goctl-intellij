@@ -1,3 +1,5 @@
 syntax = "proto3";
 
 package template;
+
+option go_package="./template";
