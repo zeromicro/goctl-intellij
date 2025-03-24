@@ -33,15 +33,13 @@ dependencies {
 
         bundledPlugin 'com.intellij.java'
     }
-//    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 patchPluginXml {
     sinceBuild = '193.0'
     changeNotes = """
     <ul>
-       <li>fix null pointer exception</li>
-       <li>remember api style config in memory</li>
+       <li>fix java.lang.Throwable: 'virtualFile' is requested on EDT</li>
     </ul>
     """
 }

@@ -1,4 +1,4 @@
-<idea-plugin url="https://www.xiaoheiban.cn">
+<idea-plugin url="https://go-zero.dev">
     <id>cn.xiaoheiban.go-zero</id>
     <name>Goctl</name>
     <vendor email="anqiansong@gmail.cn" url="https://go-zero.dev">go-zero</vendor>
