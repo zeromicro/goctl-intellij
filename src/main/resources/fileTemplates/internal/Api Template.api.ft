@@ -1,27 +1,40 @@
 syntax = "v1"
 
-info(
-    title: "type title here"
-    desc: "type desc here"
-    author: "type author here"
-    email: "type email here"
+info (
+    title:   "type title here"
+    desc:    "type desc here"
+    author:  "type author here"
+    email:   "type email here"
     version: "type version here"
 )
 
-
-type request {
-    // TODO: add members here and delete this comment
-}
-
-type response {
-    // TODO: add members here and delete this comment
-}
-
-@server(
-    jwt: Auth
-    group: template
+type (
+    PingReq  {}
+    HelloReq {
+        Name string `path:"name"`
+    }
 )
-service template {
-    @handler handlerName // TODO: replace handler name and delete this comment
-    get /users/id/:userId(request) returns(response)
+
+type (
+    PingResp  {}
+    HelloResp {
+        Message string `json:"message"`
+    }
+)
+
+@server (
+    group: ping
+)
+service Demo {
+    @handler ping
+    get /ping
 }
+
+@server (
+    group: hello
+)
+service Demo {
+    @handler hell
+    get /hello/:name (HelloReq) returns (HelloResp)
+}
+
