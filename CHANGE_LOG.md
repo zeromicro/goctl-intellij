@@ -1,4 +1,8 @@
-# 2022-04-29(1.1.0)
+# 2025-03-24(1.2.0)
+- 升级插件到 2.0 版本
+- 修复 `java.lang.Throwable: 'virtualFile' is requested on EDT...`问题
+
+2022-04-29(1.1.0)
 * rpc 代码生成支持 `goctl rpc protoc`
 * 新增支持弹窗选择 `style`,`output`,`proto_path`,`goclt home` 等信息填写
 * 支持快速代码生成
