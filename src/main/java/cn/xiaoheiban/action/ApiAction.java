@@ -26,11 +26,11 @@ public class ApiAction extends FileAction {
     @Override
     public void performed(@NotNull AnActionEvent e, @NotNull VirtualFile file, @NotNull Project project) {
         String parent = file.getParent().getPath();
-        FileChooseDialog dialog = new FileChooseDialog("API Generate Option", "Cancel", false);
+        FileChooseDialog dialog = new FileChooseDialog("API Generate Option", "Cancel", false,false);
         dialog.setDefaultPath(parent);
         dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
             @Override
-            public void onOk(String goctlHome, String output, String protoPath, String style) {
+            public void onOk(String goctlHome, String output, String protoPath, String style,boolean group,boolean client) {
                 ProgressManager.getInstance().run(new Task.Backgroundable(project, "generating api ...") {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
