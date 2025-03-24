@@ -15,14 +15,17 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class FileChooseDialog extends DialogWrapper {
     private OnClickListener onOkClickListener;
     private String title;
+    private boolean rpc;
     private boolean showProtoPath;
 
     public interface OnClickListener {
-        void onOk(String goctlHome, String output, String protoPath, String style);
+        void onOk(String goctlHome, String output, String protoPath, String style, boolean group, boolean client);
 
         void onJump();
     }
@@ -30,13 +33,15 @@ public class FileChooseDialog extends DialogWrapper {
     private TextFieldWithBrowseButton textFieldWithBrowseButton;
     private TextFieldWithBrowseButton protoPathBrowseButton;
     private TextFieldWithBrowseButton templateBrowseButton;
+    private Checkbox groupCheckBox, clientBox;
     private JTextField gozeroTextField;
     private final String stylePropertyKey = "cn.xiaoheiban.go-zero" + "_style";
 
-    public FileChooseDialog(String title, String cancelText, boolean showProtoPath) {
+    public FileChooseDialog(String title, String cancelText, boolean showProtoPath, boolean rpc) {
         super(true);
         this.title = title;
         this.showProtoPath = showProtoPath;
+        this.rpc = rpc;
         init();
         setTitle(title);
         setOKButtonText("Confirm");
@@ -61,7 +66,7 @@ public class FileChooseDialog extends DialogWrapper {
     @Override
     protected JComponent createCenterPanel() {
         final JPanel contentPane = new JPanel();
-        contentPane.setLayout(new GridLayoutManager(4, 2, new Insets(10, 10, 10, 10), -1, -1));
+        contentPane.setLayout(new GridLayoutManager(6, 2, new Insets(10, 10, 10, 10), -1, -1));
 
         Dimension labelDimension = new Dimension(100, -1);
         Dimension textFieldDimension = new Dimension(500, -1);
@@ -113,6 +118,29 @@ public class FileChooseDialog extends DialogWrapper {
         contentPane.add(stylePanel, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         contentPane.add(outputPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         contentPane.add(templatePanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        if (rpc) {
+            final JPanel groupPanel = new JPanel();
+            groupPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+            final JLabel groupLabel = new JLabel();
+            groupLabel.setText("Group");
+            groupPanel.add(groupLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, labelDimension, null, 0, false));
+
+            groupCheckBox = new Checkbox();
+            groupPanel.add(groupCheckBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, textFieldDimension, null, 0, false));
+            contentPane.add(groupPanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+
+            final JPanel clientPanel = new JPanel();
+            clientPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+            final JLabel clientLabel = new JLabel();
+            clientLabel.setText("Client");
+            clientPanel.add(clientLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, labelDimension, null, 0, false));
+
+            clientBox = new Checkbox();
+            clientBox.setState(true);
+            clientPanel.add(clientBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, textFieldDimension, null, 0, false));
+            contentPane.add(clientPanel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+
+        }
         if (showProtoPath) {
             final JPanel protoPathPanel = new JPanel();
             protoPathPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
@@ -126,7 +154,7 @@ public class FileChooseDialog extends DialogWrapper {
             TextBrowseFolderListener protoPathListener = new TextBrowseFolderListener(protoPathChooserDescriptor);
             protoPathBrowseButton.addBrowseFolderListener(protoPathListener);
             protoPathPanel.add(protoPathBrowseButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, textFieldDimension, null, 0, false));
-            contentPane.add(protoPathPanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+            contentPane.add(protoPathPanel, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         }
         return contentPane;
     }
@@ -136,7 +164,8 @@ public class FileChooseDialog extends DialogWrapper {
     protected ValidationInfo doValidate() {
         String goctlHome = templateBrowseButton.getText();
         String outputBrowserPath = textFieldWithBrowseButton.getText();
-
+        boolean groupCheck = false;
+        boolean clientCheck = true;
         // store style string
         String style = gozeroTextField.getText();
         PropertiesComponent.getInstance().setValue(stylePropertyKey, style);
@@ -154,8 +183,14 @@ public class FileChooseDialog extends DialogWrapper {
                 protoPath = protoFile.getPath();
             }
         }
+        if (groupCheckBox != null) {
+            groupCheck = groupCheckBox.getState();
+        }
+        if (clientBox != null) {
+            clientCheck = clientBox.getState();
+        }
         if (this.onOkClickListener != null) {
-            this.onOkClickListener.onOk(goctlHome, output, protoPath, style);
+            this.onOkClickListener.onOk(goctlHome, output, protoPath, style, groupCheck, clientCheck);
         }
         return null;
     }

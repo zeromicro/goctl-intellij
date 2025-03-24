@@ -26,12 +26,12 @@ public class RpcAction extends FileAction {
         try {
             String parent = file.getParent().getPath();
             String content = IO.read(file.getInputStream());
-            FileChooseDialog dialog = new FileChooseDialog("zRPC Generate Option", "Cancel", content.contains("import"));
+            FileChooseDialog dialog = new FileChooseDialog("zRPC Generate Option", "Cancel", content.contains("import"), true);
             dialog.setDefaultPath(parent);
             dialog.setOnClickListener(new FileChooseDialog.OnClickListener() {
                 @Override
-                public void onOk(String goctlHome, String output, String protoPath, String style) {
-                    generateRpc(project, goctlHome, protoPath, path, output, style, e);
+                public void onOk(String goctlHome, String output, String protoPath, String style, boolean group, boolean client) {
+                    generateRpc(project, goctlHome, protoPath, path, output, style, group, client, e);
                 }
 
                 @Override
@@ -44,7 +44,7 @@ public class RpcAction extends FileAction {
         }
     }
 
-    private void generateRpc(Project project, String goctlHome, String protoPath, String src, String target, String style, AnActionEvent e) {
+    private void generateRpc(Project project, String goctlHome, String protoPath, String src, String target, String style, boolean group, boolean client, AnActionEvent e) {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "generating rpc ...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
@@ -66,6 +66,12 @@ public class RpcAction extends FileAction {
                             Notification.getInstance().warning(project, "goctlHome " + goctlHome + " is not a directory");
                         }
                     }
+                }
+                if (group) {
+                    command += " --multiple ";
+                }
+                if (!client) {
+                    command += " --client=false ";
                 }
                 boolean done = Exec.runGoctl(project, command);
                 if (done) {
