@@ -1,15 +1,13 @@
 package cn.xiaoheiban.action;
 
+import cn.xiaoheiban.actionx.FileAction;
 import cn.xiaoheiban.contsant.Constant;
 import cn.xiaoheiban.io.IO;
 import cn.xiaoheiban.notification.Notification;
 import cn.xiaoheiban.ui.FileChooseDialog;
 import cn.xiaoheiban.util.Exec;
 import cn.xiaoheiban.util.FileReload;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.fileChooser.FileChooserDialog;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -21,36 +19,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-public class RpcAction extends AnAction {
-
+public class RpcAction extends FileAction {
     @Override
-    public void update(@NotNull AnActionEvent e) {
-        VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
-        if (file == null) {
-            e.getPresentation().setEnabledAndVisible(false);
-            return;
-        }
-        String extension = file.getExtension();
-        if (StringUtil.isEmpty(extension)) {
-            e.getPresentation().setEnabledAndVisible(false);
-            return;
-        }
-        if (!extension.equals(Constant.RPC_EXTENSION)) {
-            e.getPresentation().setEnabledAndVisible(false);
-        }
-    }
-
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
-        if (file == null) {
-            return;
-        }
+    public void performed(@NotNull AnActionEvent e, @NotNull VirtualFile file, @NotNull Project project) {
         String path = file.getPath();
-        Project project = e.getProject();
-        if (project == null) {
-            return;
-        }
         try {
             String parent = file.getParent().getPath();
             String content = IO.read(file.getInputStream());
@@ -104,5 +76,8 @@ public class RpcAction extends AnAction {
         });
     }
 
-
+    @Override
+    public String getExtension() {
+        return Constant.RPC_EXTENSION;
+    }
 }
