@@ -36,7 +36,7 @@ dependencies {
 }
 
 patchPluginXml {
-    sinceBuild = '193.0'
+    sinceBuild = '222.0'
     changeNotes = """
     <ul>
        <li>fix java.lang.Throwable: 'virtualFile' is requested on EDT</li>
