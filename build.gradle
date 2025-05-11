@@ -39,7 +39,7 @@ patchPluginXml {
     sinceBuild = '222.0'
     changeNotes = """
     <ul>
-       <li>fix java.lang.Throwable: 'virtualFile' is requested on EDT</li>
+       <li>supported latest api grammar</li>
     </ul>
     """
 }

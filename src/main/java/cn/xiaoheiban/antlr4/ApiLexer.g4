@@ -84,9 +84,9 @@ WS:         [ \t\r\n]+ -> channel(HIDDEN) ;
 
 
 
-VALUE:      STRING_F     ~('\r'|'\n'|':')*  STRING_F;
+VALUE:      STRING_F     ~('\r'|'\n')*  STRING_F;
 
-RAW_STRING: RAW_STRING_F ~('`'|'\r'|'\n')* RAW_STRING_F;
+RAW_STRING: RAW_STRING_F ~('`')* RAW_STRING_F;
 
 // COMMENT
 COMMENT:    COMMENT_FLAG ~('\n')*  -> channel(HIDDEN);
