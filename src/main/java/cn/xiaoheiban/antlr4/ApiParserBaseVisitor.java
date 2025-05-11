@@ -1,3 +1,4 @@
+// Generated from /Users/keson/webspace/goctl-intellij/src/main/java/cn/xiaoheiban/antlr4/ApiParser.g4 by ANTLR 4.13.2
 package cn.xiaoheiban.antlr4;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
