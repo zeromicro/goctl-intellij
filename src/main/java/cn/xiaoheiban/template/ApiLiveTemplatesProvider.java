@@ -8,12 +8,12 @@ public class ApiLiveTemplatesProvider implements DefaultLiveTemplatesProvider {
 
     @Override
     public String[] getDefaultLiveTemplateFiles() {
-       return new String[]{"/liveTemplates/api", "/liveTemplates/apiTags", "/liveTemplates/info"};
+        return new String[]{"/liveTemplates/api", "/liveTemplates/apiTags"};
     }
 
     @Nullable
     @Override
-    public  String[] getHiddenLiveTemplateFiles() {
+    public String[] getHiddenLiveTemplateFiles() {
         return new String[]{"/liveTemplates/apiHidden"};
     }
 }

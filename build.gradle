@@ -39,7 +39,7 @@ patchPluginXml {
     sinceBuild = '222.0'
     changeNotes = """
     <ul>
-       <li>supported latest api grammar</li>
+       <li>fix Unable to find template resource: /liveTemplates/info</li>
     </ul>
     """
 }
