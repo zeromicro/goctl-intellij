@@ -1,12 +1,15 @@
 package cn.xiaoheiban.psi.nodes;
 
+import cn.xiaoheiban.antlr4.ApiLexer;
 import cn.xiaoheiban.antlr4.ApiParser;
 import cn.xiaoheiban.parser.ApiParserDefinition;
 import cn.xiaoheiban.psi.ApiFile;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.util.text.Strings;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
+import org.antlr.jetbrains.adapter.lexer.TokenIElementType;
 import org.antlr.jetbrains.adapter.psi.AntlrPsiNode;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,11 +102,32 @@ public class IPsiNode extends AntlrPsiNode {
         for (ASTNode kvNode : kvNodes) {
             String kv = kvNode.getText();
             if (kv.startsWith("prefix")) {
-                ASTNode valueNode = kvNode.getTreeParent().getLastChildNode();
-                if (valueNode == null) {
-                    return "";
+                ASTNode next = kvNode;
+                while (true) {
+                    if (next == null) {
+                        return "";
+                    }
+
+                    if (next instanceof PsiWhiteSpace){
+                        next = next.getTreeNext();
+                        continue;
+                    }
+                    IElementType t = next.getElementType();
+                    if (t.equals(ApiParserDefinition.rule(ApiParser.RULE_key))) {
+                        next = next.getTreeNext();
+                        continue;
+                    }
+                    if (t instanceof TokenIElementType) {
+                        TokenIElementType myType = (TokenIElementType) t;
+                        int tokenType = myType.getAntlrTokenType();
+                        if (tokenType == ApiLexer.COLON) {
+                            next = next.getTreeNext();
+                            continue;
+                        }
+                    }
+
+                    return next.getText();
                 }
-                return valueNode.getText();
             }
         }
         return "";
