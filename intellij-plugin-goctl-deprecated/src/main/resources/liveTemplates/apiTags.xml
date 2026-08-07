@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<templateSet group="Api Tags">
+    <template description='`xml:""`' name='xml' toReformat='true' toShortenFQNames='true'
+              value='`xml:"$FIELD_NAME$"$END$`'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG' value='true'/>
+        </context>
+    </template>
+    <template description='`json:""`' name='json' toReformat='true' toShortenFQNames='true'
+              value='`json:"$FIELD_NAME$"$END$`'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG' value='true'/>
+        </context>
+    </template>
+    <template description='`path:""`' name='path' toReformat='true' toShortenFQNames='true'
+              value='`path:"$FIELD_NAME$"$END$`'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG' value='true'/>
+        </context>
+    </template>
+    <template description='`form:""`' name='form' toReformat='true' toShortenFQNames='true'
+              value='`form:"$FIELD_NAME$"$END$`'>
+        <variable alwaysStopAt='true' defaultValue='' expression='camelCase(apiFieldName())' name='FIELD_NAME'/>
+        <context>
+            <option name='API_TAG' value='true'/>
+        </context>
+    </template>
+</templateSet>

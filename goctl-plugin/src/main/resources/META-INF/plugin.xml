@@ -1,0 +1,77 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>cn.xiaoheiban.go-zero</id>
+    <name>Goctl</name>
+    <vendor email="anqiansong@gmail.cn" url="https://go-zero.dev">go-zero</vendor>
+
+    <description><![CDATA[
+     <a href="https://go-zero.dev/">go-zero</a> support for JetBrains products.
+     <br>
+     <br>
+     Support for Api programming language of zeromicro.
+     <br>
+     <br>
+     <a href="https://github.com/zeromicro/go-zero">go-zero</a> is a web and rpc framework for golang that with
+     lots of engineering practices builtin. It’s born to ensure the stability of the busy services with resilience design,
+      and has been serving sites with tens of millions users for years
+     <br>
+     <br>
+     <h1>Features</h1>
+     <ul>
+        <li>Api File Import</li>
+        <li>Find reference</li>
+        <li>Add context menu</li>
+        <li>Highlighting of api</li>
+        <li>Grammar and lexer check</li>
+        <li>Duplicate define check</li>
+        <li>Keyword completion contributor</li>
+        <li>Support Code format</li>
+     </ul>
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.go</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="Api File"
+                implementationClass="cn.xiaoheiban.ApiFileType"
+                fieldName="INSTANCE"
+                language="api"
+                extensions="api"/>
+        <lang.parserDefinition
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiParserDefinition"/>
+        <lang.formatter
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiFormattingModelBuilder"/>
+        <lang.syntaxHighlighterFactory
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiSyntaxHighlighterFactory"/>
+        <colorSettingsPage
+                implementation="cn.xiaoheiban.ApiColorSettingsPage"/>
+        <annotator
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiAnnotator"/>
+        <lang.foldingBuilder
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiFoldingBuilder"/>
+        <notificationGroup id="Goctl.ApiImport"
+                           displayType="BALLOON"
+                           isLogByDefault="true"/>
+        <completion.contributor
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiCompletionContributor"/>
+        <psi.referenceContributor
+                language="api"
+                implementation="cn.xiaoheiban.ApiTypeReferenceContributor"/>
+        <gotoDeclarationHandler
+                implementation="cn.xiaoheiban.ApiGotoDeclarationHandler"/>
+        <lang.commenter
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiCommenter"/>
+    </extensions>
+</idea-plugin>

@@ -1,0 +1,227 @@
+{
+  parserClass="cn.xiaoheiban.parser.ApiParser"
+  parserUtilClass="cn.xiaoheiban.psi.impl.ApiParserUtil"
+
+  extends="cn.xiaoheiban.psi.ApiCompositeElement"
+
+  psiClassPrefix="Api"
+  psiImplClassSuffix="Impl"
+  psiPackage="cn.xiaoheiban.psi"
+  psiImplPackage="cn.xiaoheiban.psi.impl"
+
+  elementTypeHolderClass="cn.xiaoheiban.psi.ApiTypes"
+  elementTypeClass="cn.xiaoheiban.psi.ApiElementType"
+  tokenTypeClass="cn.xiaoheiban.psi.ApiTokenType"
+
+  tokens=[
+    // Keywords
+    SYNTAX      = 'syntax'
+    INFO        = 'info'
+    MAP         = 'map'
+    STRUCT      = 'struct'
+    INTERFACE   = 'interface'
+    TYPE        = 'type'
+    RETURNS     = 'returns'
+    IMPORT      = 'import'
+    AS          = 'as'
+    ANY         = 'interface{}'
+
+    // @-keywords
+    ATSERVER    = '@server'
+    ATDOC       = '@doc'
+    ATHANDLER   = '@handler'
+
+    SERVICE     = 'service'
+
+    // HTTP Methods
+    GET         = 'get'
+    HEAD        = 'head'
+    POST        = 'post'
+    PUT         = 'put'
+    PATCH       = 'patch'
+    DELETE      = 'delete'
+    CONNECT     = 'connect'
+    OPTIONS     = 'options'
+    TRACE       = 'trace'
+
+    // Symbols
+    LPAREN      = '('
+    RPAREN      = ')'
+    LBRACE      = '{'
+    RBRACE      = '}'
+    LBRACK      = '['
+    RBRACK      = ']'
+    DOT         = '.'
+    SEMICOLON   = ';'
+    COMMA       = ','
+    STAR        = '*'
+    ASSIGN      = '='
+    COLON       = ':'
+    QUO         = '/'
+    MINUS       = '-'
+
+    // Regexp-based tokens
+    IDENT       = 'regexp:[a-zA-Z_][a-zA-Z0-9_]*'
+    INT         = 'regexp:[0-9]+'
+    ELLIPSIS    = '...'
+    DURATION    = 'regexp:[0-9]+(ns|us|µs|ms|s|m|h)'
+    STRING      = 'regexp:"[^\r\n]*"'
+    RAW_STRING  = 'regexp:`[^`]*`'
+    LINE_COMMENT  = 'regexp://[^\r\n]*'
+    BLOCK_COMMENT = 'regexp:/\*([^*]|\*+[^*/])*\*+/'
+  ]
+
+  commentTokens="LINE_COMMENT BLOCK_COMMENT"
+}
+
+// ============================================================
+// Root
+// ============================================================
+
+api ::= syntaxLit? (importStatement | infoStatement | typeStatement | serviceStatement)* <<eof>>
+
+syntaxLit ::= 'syntax' '=' STRING
+
+// ============================================================
+// Import
+// ============================================================
+
+importStatement ::= importLit | importGroup
+
+importLit ::= 'import' importValue
+
+importGroup ::= 'import' '(' importValue* ')'
+
+importValue ::= STRING ('as' IDENT)?
+
+// ============================================================
+// Info
+// ============================================================
+
+infoStatement ::= 'info' '(' kvPair* ')'
+
+kvPair ::= IDENT ':' (STRING | RAW_STRING | IDENT)?
+
+// ============================================================
+// Type
+// ============================================================
+
+typeStatement ::= 'type' typeBody
+
+typeBody ::= typeGroupBody | typeLiteralExpr
+
+typeGroupBody ::= '(' typeLiteralExpr* ')'
+
+// type Foo = int64  |  type Foo int64  |  type Foo { ... }
+typeLiteralExpr ::= IDENT '='? dataType
+
+// ============================================================
+// DataType
+// ============================================================
+
+dataType ::= anyType
+           | structDataType
+           | mapDataType
+           | arrayDataType
+           | sliceDataType
+           | pointerDataType
+           | baseDataType
+
+// interface{}
+anyType ::= 'interface{}'
+
+// { field* }
+structDataType ::= '{' elemExpr* '}'
+
+// map[keyType]valueType
+mapDataType ::= 'map' '[' dataType ']' dataType
+
+// [N]dataType or [...]dataType
+arrayDataType ::= '[' (INT | '...') ']' dataType
+
+// []dataType
+sliceDataType ::= '[' ']' dataType
+
+// *dataType
+pointerDataType ::= '*' dataType
+
+// IDENT or pkg.IDENT
+baseDataType ::= IDENT ('.' IDENT)?
+
+// ============================================================
+// Struct Fields (elemExpr)
+// ============================================================
+
+// Field inside a struct body. Three forms:
+//   1. Named:    Name DataType Tag?       e.g.  Count int64 `json:"count"`
+//   2. Multi:    A, B DataType Tag?       e.g.  X, Y string
+//   3. Anon ptr: *TypeName Tag?           e.g.  *Base
+//   4. Anon ref: TypeName Tag?            e.g.  Base  (no dataType on same line -- best-effort)
+
+elemExpr ::= anonField | namedField
+
+// pointer anonymous OR named-with-pointer-type: both start with '*'
+// named fields starting with * always have a type after *, treated uniformly as namedField
+// pure anonymous pointer: * IDENT followed immediately by tag or end — handled by namedField fallback
+private anonField ::= '*' IDENT tag?     // *Base (anonymous embedded pointer)
+
+private namedField ::= IDENT (',' IDENT)* dataType tag?
+
+tag ::= RAW_STRING
+
+// ============================================================
+// Service
+// ============================================================
+
+serviceStatement ::= atServerBlock? serviceSpec
+
+// @server block uses dedicated KV rule (values can be paths, duration, int, ident-list)
+atServerBlock ::= '@server' '(' atServerKvPair* ')'
+
+atServerKvPair ::= IDENT ':' atServerValue
+
+// Values allowed in @server:
+//   prefix: /user/v1       → path starting with /
+//   timeout: 3s            → duration
+//   port: 8080             → integer
+//   jwt: "secret"          → string
+//   group: base            → ident
+//   group: abc-efg         → ident with dashes
+//   middleware: Auth,Log   → comma-separated idents
+atServerValue ::= atServerPathValue
+                | DURATION
+                | INT
+                | STRING
+                | IDENT ((',' | '-') IDENT)*
+
+// /user  or  /user-api  or  /user/v1  or  /user-api/v1
+atServerPathValue ::= '/' IDENT ('-' IDENT)* ('/' IDENT ('-' IDENT)*)*
+
+serviceSpec ::= 'service' serviceName '{' serviceBody* '}'
+
+serviceName ::= IDENT ('-' IDENT)*
+
+serviceBody ::= atDocClause? atHandlerClause routeStmt
+
+// @doc "string"  |  @doc ( key: value )
+atDocClause ::= '@doc' (STRING | ('(' kvPair* ')'))
+
+// @handler name
+atHandlerClause ::= '@handler' IDENT
+
+// get /path  (Req) returns (Resp)
+routeStmt ::= httpMethod pathExpr bodyClause? (RETURNS bodyClause)? ';'?
+
+httpMethod ::= 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete' | 'connect' | 'options' | 'trace'
+
+// Path: / or /path or /path/:id etc.  built from individual tokens
+pathExpr ::= pathSegment+
+
+private pathSegment ::= '/' (':')? pathItem?
+
+private pathItem ::= IDENT ('-' IDENT)* | INT
+
+// (TypeName) or ([]*TypeName) or empty ()
+bodyClause ::= '(' bodyExpr? ')'
+
+bodyExpr ::= ('[' ']')? '*'? IDENT
