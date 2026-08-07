@@ -1,0 +1,147 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>cn.xiaoheiban.go-zero</id>
+    <name>Goctl</name>
+    <vendor email="anqiansong@gmail.cn" url="https://go-zero.dev">go-zero</vendor>
+
+    <description><![CDATA[
+    <p>
+      First-class <a href="https://go-zero.dev/">go-zero</a> support for JetBrains IDEs.
+      The plugin delivers a full editing experience for <b>.api</b> files and integrates the
+      <b>goctl</b> command-line tool directly into your IDE — generate Go HTTP services, gRPC/RPC
+      services, and database model code without leaving the editor.
+    </p>
+
+    <p>
+      <a href="https://github.com/zeromicro/go-zero">go-zero</a> is a web and RPC framework for Go
+      with engineering best practices built in. It is designed for high-traffic, resilient services
+      and has been running production sites with tens of millions of users.
+    </p>
+
+    <h2>API Language Support (.api files)</h2>
+    <ul>
+      <li><b>Syntax highlighting</b> — keywords, types, HTTP methods, routes, struct tags, and comments
+          are each colored distinctly.</li>
+      <li><b>Parser &amp; lexer</b> — full BNF grammar; syntax errors are detected in real time.</li>
+      <li><b>Code formatting</b> — reformat <code>.api</code> files with the standard IDE shortcut.</li>
+      <li><b>Code folding</b> — fold <code>type(...)</code> blocks, struct bodies, <code>@server(...)</code>
+          blocks, <code>info(...)</code> blocks, and <code>service { ... }</code> bodies.</li>
+      <li><b>Code commenting</b> — toggle line / block comments with the standard IDE shortcut.</li>
+      <li><b>Color scheme page</b> — customize API language colors under
+          <i>Settings &gt; Editor &gt; Color Scheme &gt; Api</i>.</li>
+    </ul>
+
+    <h2>Code Intelligence</h2>
+    <ul>
+      <li><b>Semantic annotations</b> — type declarations, primitive types, user-defined struct references,
+          route body types, and anonymous embedded fields are all highlighted and annotated.</li>
+      <li><b>Duplicate detection</b> — reports duplicate struct names (across imported files) and
+          duplicate field names within a struct as errors.</li>
+      <li><b>Unresolved type check</b> — flags references to types that are not declared anywhere
+          in the current file or its imports.</li>
+      <li><b>Import cycle detection</b> — detects and reports circular import chains between
+          <code>.api</code> files.</li>
+      <li><b>Go-to Declaration</b> — <code>Cmd/Ctrl+Click</code> jumps to a type's definition,
+          even across imported <code>.api</code> files.</li>
+      <li><b>Find Usages / References</b> — find all usages of a struct type with <b>Find Usages</b>
+          (<code>Alt+F7</code>).</li>
+      <li><b>Keyword completion</b> — code completion for API language keywords.</li>
+    </ul>
+
+    <h2>Live Templates</h2>
+    <p>
+      Expand boilerplate instantly inside <code>.api</code> files:
+      <code>syntax</code>, <code>import</code>, <code>info</code>, <code>type</code>,
+      <code>service</code>, <code>handler</code>, HTTP method routes
+      (<code>get</code> / <code>post</code> / <code>put</code> / <code>delete</code> / …),
+      route documentation (<code>@doc</code>), and struct tag completions
+      (<code>json</code>, <code>xml</code>, <code>path</code>, <code>form</code>) with
+      automatic camelCase field-name filling.
+    </p>
+
+    <h2>New API File</h2>
+    <p>
+      Right-click any directory → <b>New &gt; New Api File</b>. Choose between an empty file
+      (minimal info block) or a full template (syntax + info + type + service skeleton).
+    </p>
+
+    <h2>Code Generation (right-click → Generate)</h2>
+    <ul>
+      <li>
+        <b>Go Code (<code>goctl api go</code>)</b> — available on <code>.api</code> files.
+        Configure output directory, naming style (<code>--style</code>), and template source
+        (built-in / local <code>--home</code> / Git <code>--remote</code> + <code>--branch</code>
+        with live branch fetching).
+      </li>
+      <li>
+        <b>RPC Code (<code>goctl rpc protoc</code>)</b> — available on <code>.proto</code> files.
+        Configure <code>--go_out</code>, <code>--go-grpc_out</code>, <code>--zrpc_out</code>,
+        naming style, and template source.
+      </li>
+      <li>
+        <b>Model Code (<code>goctl model mysql ddl</code>)</b> — available on <code>.sql</code> files.
+        Configure output directory, database name, cache support (<code>--cache</code> +
+        optional <code>--prefix</code>), ignore columns, naming style, and template source.
+      </li>
+    </ul>
+
+    <h2>Goctl Output Tool Window</h2>
+    <p>
+      All <code>goctl</code> command output is streamed in real time to the <b>Goctl</b> tool window
+      at the bottom of the IDE.
+    </p>
+
+    <h2>Plugin Settings</h2>
+    <p>
+      Configure global defaults at <i>Settings &gt; Tools &gt; Goctl</i>: goctl binary path
+      (auto-detected from <code>PATH</code> if blank), default naming style, and default template
+      source (built-in / local directory / Git repository with persistent remote URL and branch).
+    </p>
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.go</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="Api File"
+                implementationClass="cn.xiaoheiban.ApiFileType"
+                fieldName="INSTANCE"
+                language="api"
+                extensions="api"/>
+        <lang.parserDefinition
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiParserDefinition"/>
+        <lang.formatter
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiFormattingModelBuilder"/>
+        <lang.syntaxHighlighterFactory
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiSyntaxHighlighterFactory"/>
+        <colorSettingsPage
+                implementation="cn.xiaoheiban.ApiColorSettingsPage"/>
+        <annotator
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiAnnotator"/>
+        <lang.foldingBuilder
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiFoldingBuilder"/>
+        <notificationGroup id="Goctl.ApiImport"
+                           displayType="BALLOON"
+                           isLogByDefault="true"/>
+        <completion.contributor
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiCompletionContributor"/>
+        <psi.referenceContributor
+                language="api"
+                implementation="cn.xiaoheiban.ApiTypeReferenceContributor"/>
+        <gotoDeclarationHandler
+                implementation="cn.xiaoheiban.ApiGotoDeclarationHandler"/>
+        <lang.commenter
+                language="api"
+                implementationClass="cn.xiaoheiban.ApiCommenter"/>
+    </extensions>
+</idea-plugin>
