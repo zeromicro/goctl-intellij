@@ -192,7 +192,7 @@ atServerValue ::= atServerPathValue
                 | DURATION
                 | INT
                 | STRING
-                | IDENT ((',' | '-') IDENT)*
+                | IDENT ((',' | '-' | '/') IDENT)*
 
 // /user  or  /user-api  or  /user/v1  or  /user-api/v1
 atServerPathValue ::= '/' IDENT ('-' IDENT)* ('/' IDENT ('-' IDENT)*)*
