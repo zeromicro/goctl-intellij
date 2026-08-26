@@ -158,7 +158,7 @@ baseDataType ::= IDENT ('.' IDENT)?
 //   3. Anon ptr: *TypeName Tag?           e.g.  *Base
 //   4. Anon ref: TypeName Tag?            e.g.  Base  (no dataType on same line -- best-effort)
 
-elemExpr ::= anonField | namedField
+elemExpr ::= anonField | namedField | embeddedField
 
 // pointer anonymous OR named-with-pointer-type: both start with '*'
 // named fields starting with * always have a type after *, treated uniformly as namedField
@@ -166,6 +166,8 @@ elemExpr ::= anonField | namedField
 private anonField ::= '*' IDENT tag?     // *Base (anonymous embedded pointer)
 
 private namedField ::= IDENT (',' IDENT)* dataType tag?
+
+private embeddedField ::= IDENT tag?
 
 tag ::= RAW_STRING
 
@@ -189,13 +191,22 @@ atServerKvPair ::= IDENT ':' atServerValue
 //   group: abc-efg         → ident with dashes
 //   middleware: Auth,Log   → comma-separated idents
 atServerValue ::= atServerPathValue
+                | atServerIdentList
                 | DURATION
                 | INT
                 | STRING
                 | IDENT ((',' | '-') IDENT)*
 
+atServerPathValue ::= '/' pathSegments
+                | IDENT '/' pathSegments
+
+private pathSegments ::= pathItem (('/' pathItem)|('/' ':' IDENT))*
+
+atServerIdentList ::= IDENT (',' IDENT)+
+                | IDENT '-' IDENT
+
 // /user  or  /user-api  or  /user/v1  or  /user-api/v1
-atServerPathValue ::= '/' IDENT ('-' IDENT)* ('/' IDENT ('-' IDENT)*)*
+//atServerPathValue ::= '/' IDENT ('-' IDENT)* ('/' IDENT ('-' IDENT)*)*
 
 serviceSpec ::= 'service' serviceName '{' serviceBody* '}'
 
