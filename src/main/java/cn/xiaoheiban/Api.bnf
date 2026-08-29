@@ -195,7 +195,7 @@ atServerValue ::= atServerPathValue
                 | DURATION
                 | INT
                 | STRING
-                | IDENT ((',' | '-') IDENT)*
+                | IDENT ((',' | '-' | '/') IDENT)*
 
 atServerPathValue ::= '/' pathSegments
                 | IDENT '/' pathSegments
