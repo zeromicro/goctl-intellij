@@ -5,10 +5,15 @@ import cn.xiaoheiban.psi.ApiImportGroup;
 import cn.xiaoheiban.psi.ApiImportStatement;
 import cn.xiaoheiban.psi.ApiImportValue;
 import cn.xiaoheiban.psi.ApiTypeLiteralExpr;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,13 +45,13 @@ public final class ApiPsiUtil {
     }
 
     // -------------------------------------------------------------------------
-    // Find a type declaration by name across all reachable files
+    // Find types in direct imports and in the entry point that includes this file.
     // -------------------------------------------------------------------------
 
     @Nullable
     public static ApiTypeLiteralExpr findTypeDeclaration(@NotNull ApiFile fromFile,
                                                           @NotNull String typeName) {
-        for (ApiFile f : collectAllApiFiles(fromFile)) {
+        for (ApiFile f : collectTypeScopeFiles(fromFile)) {
             for (ApiTypeLiteralExpr decl :
                     PsiTreeUtil.collectElementsOfType(f, ApiTypeLiteralExpr.class)) {
                 if (typeName.equals(decl.getIdent().getText())) {
@@ -55,6 +60,34 @@ public final class ApiPsiUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * goctl resolves an entry API and its imports as one type scope. A child API
+     * therefore also sees types in sibling imports of that entry point. Search
+     * ancestor directories for entry points, but only admit import graphs that
+     * actually contain this file; unrelated APIs must not hide missing types.
+     */
+    private static Set<ApiFile> collectTypeScopeFiles(@NotNull ApiFile fromFile) {
+        return CachedValuesManager.getCachedValue(fromFile, () -> {
+            Set<ApiFile> scope = collectAllApiFiles(fromFile);
+            VirtualFile source = fromFile.getVirtualFile();
+            ProjectFileIndex index = ProjectFileIndex.getInstance(fromFile.getProject());
+            PsiManager manager = PsiManager.getInstance(fromFile.getProject());
+            for (VirtualFile dir = source == null ? null : source.getParent();
+                 dir != null && index.isInContent(dir); dir = dir.getParent()) {
+                for (VirtualFile candidate : dir.getChildren()) {
+                    ProgressManager.checkCanceled();
+                    if (candidate.isDirectory() || !"api".equals(candidate.getExtension())) continue;
+                    PsiFile psi = manager.findFile(candidate);
+                    if (!(psi instanceof ApiFile entry) || scope.contains(entry)) continue;
+                    Set<ApiFile> imports = collectAllApiFiles(entry);
+                    if (imports.contains(fromFile)) scope.addAll(imports);
+                }
+            }
+            // Re-evaluate after edits, including creation/removal of entry API files.
+            return CachedValueProvider.Result.create(scope, PsiModificationTracker.MODIFICATION_COUNT);
+        });
     }
 
     // -------------------------------------------------------------------------

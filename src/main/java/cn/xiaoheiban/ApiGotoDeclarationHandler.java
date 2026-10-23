@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  *   ApiBodyExpr     — route request / response body types
  *
  * Navigates to the ApiTypeLiteralExpr that declares the type, searching
- * the current file and all transitively imported files.
+ * the current file, its imports, and entry points that import the current file.
  */
 public class ApiGotoDeclarationHandler extends GotoDeclarationHandlerBase {
 
@@ -57,7 +57,7 @@ public class ApiGotoDeclarationHandler extends GotoDeclarationHandlerBase {
         PsiFile file = sourceElement.getContainingFile();
         if (!(file instanceof ApiFile apiFile)) return null;
 
-        // findTypeDeclaration searches current file + all transitively imported files
+        // Use the same entry-point type scope as unresolved-type diagnostics.
         return ApiPsiUtil.findTypeDeclaration(apiFile, typeName);
     }
 }
