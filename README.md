@@ -44,6 +44,7 @@ The plugin registers the **Api** language and provides a complete editing experi
 | **Unresolved type check** | Flags references to types that are not declared anywhere in the current file or its imports. |
 | **Import cycle detection** | Detects and reports circular import chains between `.api` files. |
 | **Go-to Declaration** | `Cmd/Ctrl+Click` or **Go to Declaration** on a type name jumps to its definition, even across imported `.api` files. |
+| **Handler navigation** | `Cmd/Ctrl+Click` on an `@handler` name opens the generated Go function, using the service directory and `group` to distinguish identical names. |
 | **Find Usages / References** | Find all usages of a struct type with **Find Usages** (`Alt+F7`). |
 | **Keyword completion** | Code completion for API language keywords when typing identifiers. |
 

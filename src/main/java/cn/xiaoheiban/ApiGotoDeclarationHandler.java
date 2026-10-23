@@ -1,6 +1,7 @@
 package cn.xiaoheiban;
 
 import cn.xiaoheiban.psi.ApiBaseDataType;
+import cn.xiaoheiban.psi.ApiAtHandlerClause;
 import cn.xiaoheiban.psi.ApiBodyExpr;
 import cn.xiaoheiban.psi.ApiElemExpr;
 import cn.xiaoheiban.psi.ApiFile;
@@ -12,9 +13,10 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Handles Cmd+Click (Go To Declaration) for user-defined struct type names in .api files.
+ * Handles Cmd+Click (Go To Declaration) for handler functions and user-defined types.
  *
  * Triggered when clicking an IDENT leaf token that is a direct child of:
+ *   ApiAtHandlerClause — a generated Go handler function
  *   ApiBaseDataType — struct field types, map/slice/array/pointer element types
  *   ApiBodyExpr     — route request / response body types
  *
@@ -22,6 +24,16 @@ import org.jetbrains.annotations.Nullable;
  * the current file and all transitively imported files.
  */
 public class ApiGotoDeclarationHandler extends GotoDeclarationHandlerBase {
+
+    @Override
+    public PsiElement @Nullable [] getGotoDeclarationTargets(
+            @Nullable PsiElement sourceElement, int offset, Editor editor) {
+        if (sourceElement != null && sourceElement.getNode().getElementType() == ApiTypes.IDENT
+                && sourceElement.getParent() instanceof ApiAtHandlerClause clause) {
+            return ApiHandlerResolver.findTargets(clause);
+        }
+        return super.getGotoDeclarationTargets(sourceElement, offset, editor);
+    }
 
     @Override
     public @Nullable PsiElement getGotoDeclarationTarget(
