@@ -165,7 +165,8 @@ elemExpr ::= anonField | namedField | embeddedField
 // pure anonymous pointer: * IDENT followed immediately by tag or end — handled by namedField fallback
 private anonField ::= '*' IDENT tag?     // *Base (anonymous embedded pointer)
 
-private namedField ::= IDENT (',' IDENT)* dataType tag?
+// the type must start on the same line as the field name, otherwise `A\nB` is two embedded fields
+private namedField ::= IDENT (',' IDENT)* <<sameLine>> dataType tag?
 
 private embeddedField ::= IDENT tag?
 
