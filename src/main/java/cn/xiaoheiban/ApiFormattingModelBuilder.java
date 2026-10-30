@@ -18,7 +18,8 @@ public class ApiFormattingModelBuilder implements FormattingModelBuilder {
         PsiElement element = ctx.getPsiElement();
         CodeStyleSettings settings = ctx.getCodeStyleSettings();
         ASTNode root = element.getContainingFile().getNode();
-        Block block = new ApiBlock(root, null, Indent.getNoneIndent(), null, settings, null, null);
+        Block block = new ApiBlock(
+                root, null, Indent.getNoneIndent(), null, settings, null, null, element.getContainingFile());
         return FormattingModelProvider.createFormattingModelForPsiFile(
                 element.getContainingFile(), block, settings);
     }

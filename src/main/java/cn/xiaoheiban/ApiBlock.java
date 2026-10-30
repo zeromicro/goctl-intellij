@@ -10,6 +10,7 @@ import com.intellij.formatting.Spacing;
 import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ApiBlock extends AbstractBlock {
 
@@ -26,6 +28,8 @@ public class ApiBlock extends AbstractBlock {
     private final CodeStyleSettings settings;
     private final Alignment typeAlignment;
     private final Alignment tagAlignment;
+    private final PsiFile file;
+    private final boolean embeddedTypePairSeparatedByLineBreak;
 
     protected ApiBlock(
             @NotNull ASTNode node,
@@ -34,13 +38,17 @@ public class ApiBlock extends AbstractBlock {
             @Nullable Wrap wrap,
             @NotNull CodeStyleSettings settings,
             @Nullable Alignment typeAlignment,
-            @Nullable Alignment tagAlignment
+            @Nullable Alignment tagAlignment,
+            @NotNull PsiFile file
     ) {
         super(node, wrap, alignment);
         this.myIndent = indent == null ? Indent.getNoneIndent() : indent;
         this.settings = settings;
         this.typeAlignment = typeAlignment;
         this.tagAlignment = tagAlignment;
+        this.file = file;
+        this.embeddedTypePairSeparatedByLineBreak = node.getElementType() == ApiTypes.ELEM_EXPR
+                && isEmbeddedTypePairSeparatedByLineBreak();
     }
 
     @Override
@@ -49,6 +57,8 @@ public class ApiBlock extends AbstractBlock {
         IElementType parentType = myNode.getElementType();
         Alignment sharedTypeAlignment = parentType == ApiTypes.STRUCT_DATA_TYPE ? Alignment.createAlignment(true) : null;
         Alignment sharedTagAlignment = parentType == ApiTypes.STRUCT_DATA_TYPE ? Alignment.createAlignment(true) : null;
+        boolean isEmbeddedTypePair = parentType == ApiTypes.ELEM_EXPR
+                && embeddedTypePairSeparatedByLineBreak;
 
         for (ASTNode child = myNode.getFirstChildNode(); child != null; child = child.getTreeNext()) {
             if (child.getElementType() == TokenType.WHITE_SPACE) {
@@ -66,7 +76,7 @@ public class ApiBlock extends AbstractBlock {
             }
 
             if (parentType == ApiTypes.ELEM_EXPR) {
-                if (childType == ApiTypes.DATA_TYPE) {
+                if (childType == ApiTypes.DATA_TYPE && !isEmbeddedTypePair) {
                     childAlignment = typeAlignment;
                 } else if (childType == ApiTypes.TAG) {
                     childAlignment = tagAlignment;
@@ -80,7 +90,8 @@ public class ApiBlock extends AbstractBlock {
                     null,
                     settings,
                     childTypeAlignment,
-                    childTagAlignment
+                    childTagAlignment,
+                    file
             ));
         }
 
@@ -217,6 +228,9 @@ public class ApiBlock extends AbstractBlock {
         }
 
         if (parentType == ApiTypes.ELEM_EXPR) {
+            if (embeddedTypePairSeparatedByLineBreak) {
+                return newline(1, false);
+            }
             if (rightType == ApiTypes.COMMA) {
                 return noSpace();
             }
@@ -320,6 +334,37 @@ public class ApiBlock extends AbstractBlock {
         }
 
         return Spacing.createSafeSpacing(false, 0);
+    }
+
+    private boolean isEmbeddedTypePairSeparatedByLineBreak() {
+        String elementText = myNode.getText();
+        if (!containsLineBreak(elementText)) {
+            return false;
+        }
+
+        String[] identifiers = elementText.trim().split("\\s+");
+        if (identifiers.length != 2 || !isIdentifier(identifiers[0]) || !isIdentifier(identifiers[1])) {
+            return false;
+        }
+
+        int offset = Math.min(file.getTextLength(), myNode.getStartOffset());
+        String precedingText = file.getText().substring(0, offset);
+        return isDeclaredEarlier(precedingText, identifiers[0])
+                && isDeclaredEarlier(precedingText, identifiers[1]);
+    }
+
+    private static boolean containsLineBreak(@NotNull String text) {
+        return text.contains("\n") || text.contains("\r");
+    }
+
+    private static boolean isIdentifier(@NotNull String text) {
+        return text.matches("[a-zA-Z_][a-zA-Z0-9_]*");
+    }
+
+    private static boolean isDeclaredEarlier(@NotNull String precedingText, @NotNull String typeName) {
+        Pattern declaration = Pattern.compile(
+                "(?m)^\\s*type\\s+" + Pattern.quote(typeName) + "(?:\\s|=)");
+        return declaration.matcher(precedingText).find();
     }
 
     @Override
