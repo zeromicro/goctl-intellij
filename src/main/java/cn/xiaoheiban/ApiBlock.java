@@ -10,7 +10,6 @@ import com.intellij.formatting.Spacing;
 import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.TokenType;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class ApiBlock extends AbstractBlock {
 
@@ -28,7 +26,6 @@ public class ApiBlock extends AbstractBlock {
     private final CodeStyleSettings settings;
     private final Alignment typeAlignment;
     private final Alignment tagAlignment;
-    private final PsiFile file;
     private final boolean embeddedTypePairSeparatedByLineBreak;
 
     protected ApiBlock(
@@ -38,15 +35,13 @@ public class ApiBlock extends AbstractBlock {
             @Nullable Wrap wrap,
             @NotNull CodeStyleSettings settings,
             @Nullable Alignment typeAlignment,
-            @Nullable Alignment tagAlignment,
-            @NotNull PsiFile file
+            @Nullable Alignment tagAlignment
     ) {
         super(node, wrap, alignment);
         this.myIndent = indent == null ? Indent.getNoneIndent() : indent;
         this.settings = settings;
         this.typeAlignment = typeAlignment;
         this.tagAlignment = tagAlignment;
-        this.file = file;
         this.embeddedTypePairSeparatedByLineBreak = node.getElementType() == ApiTypes.ELEM_EXPR
                 && isEmbeddedTypePairSeparatedByLineBreak();
     }
@@ -55,8 +50,8 @@ public class ApiBlock extends AbstractBlock {
     protected @NotNull List<Block> buildChildren() {
         List<Block> blocks = new ArrayList<>();
         IElementType parentType = myNode.getElementType();
-        Alignment sharedTypeAlignment = parentType == ApiTypes.STRUCT_DATA_TYPE ? Alignment.createAlignment(true) : null;
-        Alignment sharedTagAlignment = parentType == ApiTypes.STRUCT_DATA_TYPE ? Alignment.createAlignment(true) : null;
+        Alignment groupTypeAlignment = null;
+        Alignment groupTagAlignment = null;
         boolean isEmbeddedTypePair = parentType == ApiTypes.ELEM_EXPR
                 && embeddedTypePairSeparatedByLineBreak;
 
@@ -71,8 +66,18 @@ public class ApiBlock extends AbstractBlock {
             Alignment childTagAlignment = null;
 
             if (parentType == ApiTypes.STRUCT_DATA_TYPE && childType == ApiTypes.ELEM_EXPR) {
-                childTypeAlignment = sharedTypeAlignment;
-                childTagAlignment = sharedTagAlignment;
+                // Only consecutive plain fields are aligned; embedded and inline-struct fields start a new group.
+                if (isPlainField(child)) {
+                    if (groupTypeAlignment == null) {
+                        groupTypeAlignment = Alignment.createAlignment(true);
+                        groupTagAlignment = Alignment.createAlignment(true);
+                    }
+                    childTypeAlignment = groupTypeAlignment;
+                    childTagAlignment = groupTagAlignment;
+                } else {
+                    groupTypeAlignment = null;
+                    groupTagAlignment = null;
+                }
             }
 
             if (parentType == ApiTypes.ELEM_EXPR) {
@@ -90,12 +95,28 @@ public class ApiBlock extends AbstractBlock {
                     null,
                     settings,
                     childTypeAlignment,
-                    childTagAlignment,
-                    file
+                    childTagAlignment
             ));
         }
 
         return blocks;
+    }
+
+    private static boolean isPlainField(@NotNull ASTNode elem) {
+        ASTNode type = elem.findChildByType(ApiTypes.DATA_TYPE);
+        return type != null && !containsStruct(type);
+    }
+
+    private static boolean containsStruct(@NotNull ASTNode node) {
+        if (node.getElementType() == ApiTypes.STRUCT_DATA_TYPE) {
+            return true;
+        }
+        for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
+            if (containsStruct(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static @NotNull Indent childIndent(@Nullable IElementType parentType, @Nullable IElementType childType) {
@@ -144,6 +165,9 @@ public class ApiBlock extends AbstractBlock {
         IElementType rightType = typeOf(child2);
 
         if (isRootBlock()) {
+            if (isComment(rightType) && !isComment(leftType) && isOnSameLine(child1, child2)) {
+                return space(1);
+            }
             return isComment(leftType) || isComment(rightType) ? newline(1, true) : blankLines(1);
         }
 
@@ -195,6 +219,9 @@ public class ApiBlock extends AbstractBlock {
         }
 
         if (parentType == ApiTypes.TYPE_GROUP_BODY) {
+            if (isComment(rightType) && !isComment(leftType) && isOnSameLine(child1, child2)) {
+                return space(1);
+            }
             if (leftType == ApiTypes.LPAREN && rightType == ApiTypes.RPAREN) {
                 return noSpace();
             }
@@ -217,6 +244,9 @@ public class ApiBlock extends AbstractBlock {
         if (parentType == ApiTypes.STRUCT_DATA_TYPE) {
             if (leftType == ApiTypes.LBRACE && rightType == ApiTypes.RBRACE) {
                 return noSpace();
+            }
+            if (isComment(rightType) && isOnSameLine(child1, child2)) {
+                return space(1);
             }
             if (isComment(leftType) || isComment(rightType)) {
                 return newline(1, true);
@@ -337,34 +367,59 @@ public class ApiBlock extends AbstractBlock {
     }
 
     private boolean isEmbeddedTypePairSeparatedByLineBreak() {
-        String elementText = myNode.getText();
-        if (!containsLineBreak(elementText)) {
+        ASTNode first = firstNonWhitespaceChild(myNode);
+        ASTNode second = first == null ? null : firstNonWhitespaceSibling(first.getTreeNext());
+        if (first == null || second == null
+                || first.getElementType() != ApiTypes.IDENT
+                || second.getElementType() != ApiTypes.DATA_TYPE
+                || !containsLineBreakBetween(first, second)) {
             return false;
         }
 
-        String[] identifiers = elementText.trim().split("\\s+");
-        if (identifiers.length != 2 || !isIdentifier(identifiers[0]) || !isIdentifier(identifiers[1])) {
+        String[] parts = myNode.getText().trim().split("\\s+");
+        if (parts.length != 2 || !isIdentifier(parts[0]) || !isIdentifier(parts[1])) {
             return false;
         }
 
-        int offset = Math.min(file.getTextLength(), myNode.getStartOffset());
-        String precedingText = file.getText().substring(0, offset);
-        return isDeclaredEarlier(precedingText, identifiers[0])
-                && isDeclaredEarlier(precedingText, identifiers[1]);
+        ASTNode baseType = second.getFirstChildNode();
+        return baseType != null
+                && baseType.getElementType() == ApiTypes.BASE_DATA_TYPE
+                && baseType.getFirstChildNode() != null
+                && baseType.getFirstChildNode().getElementType() == ApiTypes.IDENT
+                && baseType.getFirstChildNode().getTreeNext() == null;
     }
 
-    private static boolean containsLineBreak(@NotNull String text) {
-        return text.contains("\n") || text.contains("\r");
+    private static boolean containsLineBreakBetween(@NotNull ASTNode first, @NotNull ASTNode second) {
+        for (ASTNode node = first.getTreeNext(); node != null && node != second; node = node.getTreeNext()) {
+            if (node.getText().contains("\n") || node.getText().contains("\r")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isOnSameLine(@NotNull Block left, @NotNull Block right) {
+        if (!(left instanceof ApiBlock leftBlock) || !(right instanceof ApiBlock rightBlock)) {
+            return false;
+        }
+        return !containsLineBreakBetween(leftBlock.myNode, rightBlock.myNode);
     }
 
     private static boolean isIdentifier(@NotNull String text) {
         return text.matches("[a-zA-Z_][a-zA-Z0-9_]*");
     }
 
-    private static boolean isDeclaredEarlier(@NotNull String precedingText, @NotNull String typeName) {
-        Pattern declaration = Pattern.compile(
-                "(?m)^\\s*type\\s+" + Pattern.quote(typeName) + "(?:\\s|=)");
-        return declaration.matcher(precedingText).find();
+    private static @Nullable ASTNode firstNonWhitespaceChild(@NotNull ASTNode node) {
+        return firstNonWhitespaceSibling(node.getFirstChildNode());
+    }
+
+    private static @Nullable ASTNode firstNonWhitespaceSibling(@Nullable ASTNode node) {
+        for (ASTNode current = node; current != null; current = current.getTreeNext()) {
+            if (current.getElementType() != TokenType.WHITE_SPACE) {
+                return current;
+            }
+        }
+        return null;
     }
 
     @Override
